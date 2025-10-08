@@ -6,7 +6,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Turnos</title>
+  <title>Turnos — Cliente</title>
   <style>
     /* Franja superior animada */
     .promo-bar {
@@ -261,6 +261,29 @@
       cursor:pointer;
     }
 
+    /* Floating action button (small, round, mobile-friendly) */
+    .fab{
+      position:fixed;
+      right:14px;
+      bottom:18px;
+      width:56px;
+      height:56px;
+      border-radius:50%;
+      border:0;
+      background:var(--accent);
+      box-shadow:0 8px 24px rgba(68,13,19,0.28);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:400;
+      padding:6px;
+      cursor:pointer;
+    }
+    .fab img{width:100%;height:100%;object-fit:contain;border-radius:50%}
+    @media(min-width:700px){
+      .fab{width:64px;height:64px;right:22px;bottom:22px}
+    }
+
   </style>
 </head>
 <body>
@@ -334,6 +357,11 @@
       <img id="promoImg" src="" alt="Promoción">
     </div>
   </div>
+
+  <!-- Floating action button (edit src and data-href manually) -->
+  <button id="fab" class="fab" data-href="https://example.com" aria-label="Acción rápida">
+    <img id="fabImg" src="w.jpg" alt="Acción" onerror="this.style.display='none'" />
+  </button>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
@@ -849,6 +877,19 @@
       window.__app.crearCard = crearCard;
       window.__app.allTurnos = allTurnos;
     } catch(e) { /* noop if environment prevents it */ }
+
+    // Floating action button behavior
+    try {
+      const fab = document.getElementById('fab');
+      if(fab){
+        fab.addEventListener('click', (e) => {
+          const href = fab.getAttribute('data-href');
+          if(href){ window.open(href, '_blank', 'noopener'); }
+        });
+        // prevent keyboard focus outline on mobile tap
+        fab.addEventListener('touchstart', ()=>{});
+      }
+    } catch(e){ /* noop */ }
 
   </script>
 </body>

@@ -138,15 +138,15 @@
     }
     @media (max-width:700px){
       .grid{
-        grid-template-columns: 1fr;
-        gap:20px;
-        padding:0 4px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap:12px;
+        padding:0 6px;
       }
       .card{
         min-width:0;
         max-width:100%;
-        padding:14px 6px 10px 6px;
-        border-radius:12px;
+        padding:12px 8px;
+        border-radius:10px;
       }
       .images img{
         width:100%;
@@ -217,7 +217,7 @@
       /* keep space for promo bar + header on small screens to avoid overlap */
       .wrap{padding-top: calc(var(--promo-height) + var(--header-height) + 12px); padding-left:8px; padding-right:8px;}
       .card{padding:10px;}
-      .brand img{height:86px;}
+  .brand img{height:66px;}
       h1{font-size:1.6rem;}
     }
 

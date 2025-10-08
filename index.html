@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giulimoretriaestetica</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background-color: #fdfcf8; /* blanco hueso-crudo elegante */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      transition: background-color 0.5s ease;
+    }
+
+    .logo-container {
+      opacity: 1;
+      transition: opacity 1.5s ease;
+    }
+
+    .logo-container.fade-out {
+      opacity: 0;
+    }
+
+    img {
+      width: 250px; /* ajustá el tamaño según tu logo */
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="logo-container" id="logoContainer">
+    <!-- Acá ponés tu logo -->
+    <img src="logo.png" alt="Logo">
+  </div>
+
+  <script>
+    // Espera 1.5 segundos antes de empezar el desvanecimiento
+    setTimeout(() => {
+      document.getElementById('logoContainer').classList.add('fade-out');
+    }, 1500);
+
+    // A los 2 segundos (1.5 + 0.5), redirige al otro HTML
+    setTimeout(() => {
+      window.location.href = "cliente.html"; // Cambiá por tu destino
+    }, 2000);
+  </script>
+</body>
+</html>

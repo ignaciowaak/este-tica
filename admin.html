@@ -1,0 +1,705 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin — Gestión de Turnos</title>
+  <style>
+    :root{
+      --bg:#f7fafc;
+      --card:#ffffff;
+      --muted:#52606b;
+      --accent:#7dd3fc;
+      --success:#16a34a;
+      --danger:#ef4444;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#fbfdff 0%,#f5f8fb 100%);min-height:100vh;display:flex;justify-content:center;padding:18px}
+    main{width:100%;max-width:1100px}
+    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+    h1{margin:0;font-size:1.35rem}
+    .panel{background:var(--card);padding:16px;border-radius:12px;box-shadow:0 8px 24px rgba(11,34,48,0.06)}
+    form{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-bottom:12px}
+    label{font-size:0.85rem;color:var(--muted)}
+    input, select, textarea, button{padding:8px 10px;border-radius:8px;border:1px solid #e6eefb;font-size:1rem}
+    .btn{background:linear-gradient(180deg,var(--accent),#4fc3ff);border:0;color:#033;font-weight:700;cursor:pointer}
+    .grid{display:grid;grid-template-columns: 1fr;gap:10px;margin-top:12px}
+    .turno{display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;background:linear-gradient(180deg,#fff,#fbfeff);box-shadow:0 6px 14px rgba(10,20,30,0.03);justify-content:space-between;flex-wrap:wrap}
+    .left{display:flex;gap:16px;align-items:center}
+    .meta{min-width:160px}
+    .muted{color:var(--muted)}
+    .actions{display:flex;gap:8px;align-items:center}
+    .btn-edit{background:#fff;border:1px solid #cfe9ff;padding:8px 10px;border-radius:8px;cursor:pointer}
+    .btn-delete{background:var(--danger);color:white;padding:8px 10px;border-radius:8px;border:0;cursor:pointer}
+    .status-res{color:var(--danger);font-weight:700}
+    .status-ava{color:var(--success);font-weight:700}
+    .images{display:flex;gap:8px;overflow:auto;padding-top:8px}
+    .images img{height:70px;border-radius:6px;object-fit:cover}
+    .loginBox{max-width:480px;margin:40px auto;padding:18px;background:var(--card);border-radius:12px;box-shadow:0 10px 30px rgba(10,20,30,0.06)}
+    .msg{padding:8px 10px;border-radius:8px;display:inline-block}
+    .msg.success{background:#f0fdf4;color:var(--success);border:1px solid #c7f0d2}
+    .msg.error{background:#fff5f5;color:var(--danger);border:1px solid #ffd4d4}
+
+    /* Progress bar style */
+    .progressWrap{width:100%;background:#eef4fb;border-radius:8px;height:14px;overflow:hidden;margin-top:8px;border:1px solid #d9eefc;display:none}
+    .progressBar{height:100%;width:0%;background:linear-gradient(90deg,#5fb3ff,#3a98ff);transition:width 150ms ease}
+    .progressText{font-size:0.9rem;color:var(--muted);margin-top:6px;display:none}
+
+    /* Promotion preview */
+    .promoPreview img{height:64px;border-radius:6px;object-fit:cover}
+
+    @media (max-width:700px){
+      .left{flex-direction:column;align-items:flex-start}
+      form{flex-direction:column;align-items:stretch}
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>Panel de Administración</h1>
+        <p class="muted">Iniciá sesión para administrar turnos y ver reservas.</p>
+      </div>
+      <div id="info" class="muted">Conectando...</div>
+    </header>
+
+    <!-- LOGIN -->
+    <div id="loginScreen" class="loginBox" aria-live="polite">
+      <h3>Iniciar sesión (admin)</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+        <input id="adminEmail" type="email" placeholder="email@dominio.com" required>
+        <input id="adminPass" type="password" placeholder="Contraseña" required>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button id="btnLogin" class="btn">Entrar</button>
+          <div id="loginMsg" class="muted"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL -->
+    <section id="panel" class="panel" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <div>
+          <strong>Logueado como:</strong> <span id="whoami"></span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button id="btnLogout" class="btn" style="background:#ffd166;color:#042">Cerrar sesión</button>
+        </div>
+      </div>
+
+      <hr style="margin:12px 0">
+
+      <!-- Logo -->
+      <div style="margin-bottom:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <div>
+          <label><strong>Logo para la web cliente</strong></label><br>
+          <input id="logoFile" type="file" accept="image/*">
+        </div>
+        <div>
+          <button id="uploadLogoBtn" class="btn">Subir logo</button>
+        </div>
+        <div id="logoPreview" style="display:flex;align-items:center;gap:8px"></div>
+      </div>
+
+      <!-- PROMOCION -->
+      <div style="margin-bottom:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <div>
+          <label><strong>Promoción (imagen grande para cliente)</strong></label><br>
+          <input id="promoFile" type="file" accept="image/*">
+        </div>
+        <div>
+          <button id="uploadPromoBtn" class="btn">Subir promoción</button>
+        </div>
+        <div class="promoPreview" id="promoPreview"></div>
+        <div style="margin-left:auto">
+          <button id="deletePromoBtn" class="btn-edit">Eliminar promo</button>
+        </div>
+        <div class="progressWrap" id="promoProgressWrap"><div class="progressBar" id="promoProgressBar"></div></div>
+        <div class="progressText" id="promoProgressText"></div>
+      </div>
+
+      <!-- Form agregar turno -->
+      <form id="formAdd" onsubmit="return false;">
+        <div>
+          <label for="fecha">Fecha</label><br>
+          <input id="fecha" type="date" required>
+        </div>
+        <div>
+          <label for="hora">Hora</label><br>
+          <input id="hora" type="time" required>
+        </div>
+        <div>
+          <label for="precio">Precio (ARS)</label><br>
+          <input id="precio" type="number" min="0" required placeholder="3000">
+        </div>
+        <div style="flex:1;min-width:240px">
+          <label for="ubicacion">Ubicación</label><br>
+          <input id="ubicacion" type="text" placeholder="Calle, local, ciudad">
+        </div>
+        <div style="flex-basis:100%">
+          <label for="descripcion">Descripción / detalles</label><br>
+          <textarea id="descripcion" rows="2" style="width:100%;border-radius:8px"></textarea>
+        </div>
+        <div style="flex-basis:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <div>
+            <label>Fotos del turno (múltiples)</label><br>
+            <input id="photos" type="file" accept="image/*" multiple>
+          </div>
+          <div>
+            <button id="addBtn" class="btn" style="height:40px;">Agregar turno</button>
+          </div>
+        </div>
+
+        <!-- Upload progress for adding turno -->
+        <div class="progressWrap" id="turnoProgressWrap"><div class="progressBar" id="turnoProgressBar"></div></div>
+        <div class="progressText" id="turnoProgressText"></div>
+      </form>
+
+      <div id="messageArea"></div>
+
+      <div style="margin-top:12px">
+        <h3 style="margin:0 0 8px 0">Turnos existentes</h3>
+        <div id="turnosList" class="grid" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+    import {
+      getDatabase, ref as dbRef, onValue, push, set, get, update, remove
+    } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
+    import {
+      getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject
+    } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAhz1XHoprhhrHyYfuAdIYGMJxm5UsDO-4",
+      authDomain: "the-pic-c437e.firebaseapp.com",
+      databaseURL: "https://the-pic-c437e-default-rtdb.firebaseio.com",
+      projectId: "the-pic-c437e",
+      storageBucket: "the-pic-c437e.appspot.com",
+      messagingSenderId: "750954597180",
+      appId: "1:750954597180:web:fc586d73d852ed5e17ec39"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const storage = getStorage(app);
+
+    const adminsRef = dbRef(db, 'admins');
+    const turnosRef = dbRef(db, 'turnos');
+    const siteRef = dbRef(db, 'site');
+
+    // UI elements
+    const loginScreen = document.getElementById('loginScreen');
+    const panel = document.getElementById('panel');
+    const btnLogin = document.getElementById('btnLogin');
+    const adminEmailInp = document.getElementById('adminEmail');
+    const adminPassInp = document.getElementById('adminPass');
+    const loginMsg = document.getElementById('loginMsg');
+    const whoami = document.getElementById('whoami');
+    const btnLogout = document.getElementById('btnLogout');
+    const info = document.getElementById('info');
+    const addBtn = document.getElementById('addBtn');
+    const turnosList = document.getElementById('turnosList');
+    const messageArea = document.getElementById('messageArea');
+    const fechaInput = document.getElementById('fecha');
+    const horaInput = document.getElementById('hora');
+    const precioInput = document.getElementById('precio');
+    const ubicacionInput = document.getElementById('ubicacion');
+    const descripcionInput = document.getElementById('descripcion');
+    const photosInput = document.getElementById('photos');
+
+    const logoFile = document.getElementById('logoFile');
+    const uploadLogoBtn = document.getElementById('uploadLogoBtn');
+    const logoPreview = document.getElementById('logoPreview');
+
+    const promoFile = document.getElementById('promoFile');
+    const uploadPromoBtn = document.getElementById('uploadPromoBtn');
+    const promoPreview = document.getElementById('promoPreview');
+    const deletePromoBtn = document.getElementById('deletePromoBtn');
+    const promoProgressWrap = document.getElementById('promoProgressWrap');
+    const promoProgressBar = document.getElementById('promoProgressBar');
+    const promoProgressText = document.getElementById('promoProgressText');
+
+    const turnoProgressWrap = document.getElementById('turnoProgressWrap');
+    const turnoProgressBar = document.getElementById('turnoProgressBar');
+    const turnoProgressText = document.getElementById('turnoProgressText');
+
+    let currentAdminEmail = null;
+    let allTurnos = {};
+
+    function showMessage(text, type='success', timeout=3500){
+      messageArea.innerHTML = '';
+      const d = document.createElement('div');
+      d.className = 'msg ' + (type === 'success' ? 'success' : 'error');
+      d.textContent = text;
+      messageArea.appendChild(d);
+      setTimeout(()=> { if(messageArea.contains(d)) messageArea.removeChild(d); }, timeout);
+    }
+
+    // Login flow
+    async function attemptLogin(email, password){
+      try{
+        loginMsg.textContent = 'Verificando...';
+        const snap = await get(adminsRef);
+        const admins = snap.val() || {};
+        let found = false;
+        for(const k of Object.keys(admins)){
+          const a = admins[k];
+          if(a.email === email && (a.password === password)){
+            found = true;
+            break;
+          }
+        }
+        if(found){
+          currentAdminEmail = email;
+          sessionStorage.setItem('adminEmail', email);
+          renderPanelForAdmin();
+        } else {
+          loginMsg.textContent = 'Usuario/contraseña inválidos';
+          setTimeout(()=> loginMsg.textContent = '', 2500);
+        }
+      } catch(err){
+        console.error(err);
+        loginMsg.textContent = 'Error al verificar (ver consola)';
+      }
+    }
+
+    btnLogin.addEventListener('click', (e) => {
+      const email = adminEmailInp.value.trim();
+      const pass = adminPassInp.value;
+      if(!email || !pass){ loginMsg.textContent = 'Completá email y contraseña'; return; }
+      attemptLogin(email, pass);
+    });
+
+    function renderPanelForAdmin(){
+      loginScreen.style.display = 'none';
+      panel.style.display = 'block';
+      whoami.textContent = currentAdminEmail;
+      info.textContent = 'Conectado como admin';
+    }
+
+    btnLogout.addEventListener('click', () => {
+      sessionStorage.removeItem('adminEmail');
+      currentAdminEmail = null;
+      loginScreen.style.display = 'block';
+      panel.style.display = 'none';
+      info.textContent = 'Desconectado';
+    });
+
+    // If saved session
+    const saved = sessionStorage.getItem('adminEmail');
+    if(saved){
+      currentAdminEmail = saved;
+      renderPanelForAdmin();
+    }
+
+    // Upload logo (uses update so it doesn't overwrite other site keys)
+    uploadLogoBtn.addEventListener('click', async () => {
+      const file = logoFile.files[0];
+      if(!file){ showMessage('Seleccioná un archivo de imagen para el logo', 'error'); return; }
+      try{
+        const t = Date.now();
+        const path = 'site/logo_' + t + '_' + file.name;
+        const sRef = storageRef(storage, path);
+        const uploadTask = uploadBytesResumable(sRef, file);
+        // show small progress
+        promoProgressWrap.style.display = 'block';
+        promoProgressBar.style.width = '0%';
+        promoProgressText.style.display = 'block';
+        promoProgressText.textContent = 'Subiendo logo... 0%';
+        uploadTask.on('state_changed', (snapshot) => {
+          const pct = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+          promoProgressBar.style.width = pct + '%';
+          promoProgressText.textContent = 'Subiendo logo... ' + pct + '%';
+        }, (err) => {
+          console.error(err);
+          showMessage('Error subiendo logo', 'error');
+          promoProgressWrap.style.display = 'none';
+          promoProgressText.style.display = 'none';
+        }, async () => {
+          const url = await getDownloadURL(uploadTask.snapshot.ref);
+          // update (not set) so we don't overwrite site object
+          await update(siteRef, { logoUrl: url });
+          logoPreview.innerHTML = `<img src="${url}" alt="Logo" style="height:48px;border-radius:6px">`;
+          promoProgressWrap.style.display = 'none';
+          promoProgressText.style.display = 'none';
+          showMessage('Logo subido y guardado', 'success');
+        });
+      } catch(err){
+        console.error(err);
+        showMessage('Error subiendo logo', 'error');
+      }
+    });
+
+    // Upload promotion (image only) and save under site.promocion
+    uploadPromoBtn.addEventListener('click', async () => {
+      const file = promoFile.files[0];
+      if(!file){ showMessage('Seleccioná una imagen de promoción', 'error'); return; }
+      try{
+        uploadPromoBtn.disabled = true;
+        promoProgressWrap.style.display = 'block';
+        promoProgressBar.style.width = '0%';
+        promoProgressText.style.display = 'block';
+        promoProgressText.textContent = 'Subiendo promoción 0%';
+
+        const path = 'site/promo_' + Date.now() + '_' + file.name;
+        const sRef = storageRef(storage, path);
+        const uploadTask = uploadBytesResumable(sRef, file);
+        uploadTask.on('state_changed', (snapshot) => {
+          const pct = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+          promoProgressBar.style.width = pct + '%';
+          promoProgressText.textContent = 'Subiendo promoción ' + pct + '%';
+        }, (err) => {
+          console.error(err);
+          showMessage('Error subiendo promoción', 'error');
+          uploadPromoBtn.disabled = false;
+          promoProgressWrap.style.display = 'none';
+          promoProgressText.style.display = 'none';
+        }, async () => {
+          const url = await getDownloadURL(uploadTask.snapshot.ref);
+          // Save under site.promocion
+          await update(siteRef, { promocion: { imageUrl: url, createdAt: Date.now() } });
+          promoPreview.innerHTML = `<img src="${url}" alt="Promo" style="height:64px;border-radius:6px">`;
+          promoProgressWrap.style.display = 'none';
+          promoProgressText.style.display = 'none';
+          uploadPromoBtn.disabled = false;
+          showMessage('Promoción subida', 'success');
+        });
+      } catch(err){
+        console.error(err);
+        uploadPromoBtn.disabled = false;
+        promoProgressWrap.style.display = 'none';
+        promoProgressText.style.display = 'none';
+        showMessage('Error al subir promoción', 'error');
+      }
+    });
+
+    deletePromoBtn.addEventListener('click', async () => {
+      if(!confirm('Eliminar la promoción actual?')) return;
+      try{
+        // Read site to get promo url (and attempt delete if exists)
+        const siteSnap = await get(siteRef);
+        const site = siteSnap.val() || {};
+        const promo = site.promocion || {};
+        if(promo.imageUrl){
+          try{
+            // Try delete by constructing storage ref from URL path — may fail due to different domain, so we skip deleteObject for safety.
+          } catch(e){ /* ignore */ }
+        }
+        // Remove promo key
+        await update(siteRef, { promocion: null });
+        promoPreview.innerHTML = '';
+        showMessage('Promoción eliminada', 'success');
+      } catch(err){
+        console.error(err);
+        showMessage('Error eliminando promoción', 'error');
+      }
+    });
+
+    // Agregar turno con subida de imágenes y barra de progreso agregada
+    addBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      // Prevent double click
+      if(addBtn.disabled) return;
+      try{
+        const fecha = fechaInput.value;
+        const hora = horaInput.value;
+        const precio = Number(precioInput.value);
+        const descripcion = descripcionInput.value.trim();
+        const ubicacion = ubicacionInput.value.trim();
+        if(!fecha || !hora || isNaN(precio)){
+          showMessage('Completá fecha, hora y precio.', 'error'); return;
+        }
+
+        // disable UI
+        addBtn.disabled = true;
+        fechaInput.disabled = true;
+        horaInput.disabled = true;
+        precioInput.disabled = true;
+        ubicacionInput.disabled = true;
+        descripcionInput.disabled = true;
+        photosInput.disabled = true;
+
+        // Show progress UI
+        turnoProgressWrap.style.display = 'block';
+        turnoProgressBar.style.width = '0%';
+        turnoProgressText.style.display = 'block';
+        turnoProgressText.textContent = 'Preparando subida... 0%';
+
+        // create push key first
+        const newRef = push(turnosRef);
+        const id = newRef.key;
+
+        const files = Array.from(photosInput.files || []);
+        let uploadedUrls = [];
+
+        if(files.length){
+          // compute totalBytes
+          const totalBytes = files.reduce((s,f)=> s+f.size, 0);
+          let cumulativeTransferred = 0;
+
+          for(const file of files){
+            const path = 'turnos/' + id + '/' + Date.now() + '_' + file.name;
+            const sRef = storageRef(storage, path);
+            const uploadTask = uploadBytesResumable(sRef, file);
+
+            // track for each file
+            await new Promise((resolve, reject) => {
+              let lastSnapshotTransferred = 0;
+              uploadTask.on('state_changed', snapshot => {
+                // compute percent relative to totalBytes
+                const bytesTransferred = snapshot.bytesTransferred;
+                // progress = (cumulativeTransferred + bytesTransferred) / totalBytes
+                const pct = Math.round(((cumulativeTransferred + bytesTransferred) / totalBytes) * 100);
+                turnoProgressBar.style.width = pct + '%';
+                turnoProgressText.textContent = 'Subiendo imágenes... ' + pct + '%';
+                lastSnapshotTransferred = bytesTransferred;
+              }, (err) => {
+                console.error(err);
+                reject(err);
+              }, async () => {
+                // file finished
+                const url = await getDownloadURL(uploadTask.snapshot.ref);
+                uploadedUrls.push(url);
+                cumulativeTransferred += file.size; // add entire file size
+                resolve();
+              });
+            });
+          }
+        } else {
+          // no files: just update progress to 90% then 100%
+          turnoProgressBar.style.width = '60%';
+          turnoProgressText.textContent = 'Sin imágenes: guardando turno...';
+        }
+
+        // Save turno in DB
+        await set(newRef, {
+          fecha,
+          hora,
+          precio,
+          descripcion,
+          ubicacion,
+          imagenes: uploadedUrls,
+          reservadoPor: "",
+          telefono: "",
+          telefonoWhatsapp: "",
+          emailCliente: "",
+          estado: "disponible"
+        });
+
+        // finalize progress
+        turnoProgressBar.style.width = '100%';
+        turnoProgressText.textContent = '✅ Turno agregado correctamente';
+        // short delay for UX
+        setTimeout(() => {
+          turnoProgressWrap.style.display = 'none';
+          turnoProgressText.style.display = 'none';
+        }, 900);
+
+        // reset form
+        fechaInput.value=''; horaInput.value=''; precioInput.value=''; descripcionInput.value=''; ubicacionInput.value=''; photosInput.value='';
+
+        showMessage('Turno cargado ✅', 'success');
+      } catch(err){
+        console.error(err);
+        showMessage('Error al agregar turno', 'error');
+      } finally {
+        // re-enable UI
+        addBtn.disabled = false;
+        fechaInput.disabled = false;
+        horaInput.disabled = false;
+        precioInput.disabled = false;
+        ubicacionInput.disabled = false;
+        descripcionInput.disabled = false;
+        photosInput.disabled = false;
+      }
+    });
+
+    function crearTurnoElemento(id, data){
+      const wrapper = document.createElement('div');
+      wrapper.className = 'turno';
+      const left = document.createElement('div');
+      left.className = 'left';
+
+      const imgBox = document.createElement('div');
+      imgBox.style.display='flex'; imgBox.style.flexDirection='column'; imgBox.style.gap='6px';
+      const imagesRow = document.createElement('div');
+      imagesRow.className = 'images';
+      if(Array.isArray(data.imagenes) && data.imagenes.length){
+        data.imagenes.forEach(u => {
+          const img = document.createElement('img');
+          img.src = u; img.alt='img';
+          imagesRow.appendChild(img);
+        });
+      } else {
+        const p = document.createElement('div'); p.className='muted'; p.textContent='Sin imágenes';
+        imagesRow.appendChild(p);
+      }
+      imgBox.appendChild(imagesRow);
+
+      const meta = document.createElement('div');
+      meta.className = 'meta';
+      meta.innerHTML = `<div><strong>${data.fecha}</strong> <span class="muted">| ${data.hora}</span></div>
+                        <div class="muted">Precio: $${Number(data.precio||0).toLocaleString('es-AR')}</div>
+                        <div class="muted">Ubicación: ${data.ubicacion || '-'}</div>
+                        <div style="margin-top:6px">${data.descripcion || ''}</div>`;
+
+      const estado = document.createElement('div');
+      if(data.estado === 'reservado'){
+        // show name, phone (compatibility), and email
+        const phoneVisible = data.telefono || data.telefonoWhatsapp || '';
+        estado.innerHTML = `<div class="status-res">Reservado</div>
+                            <div class="muted">Por: ${data.reservadoPor || ''}</div>
+                            <div class="muted">Tel: ${phoneVisible} • Mail: ${data.emailCliente || ''}</div>`;
+      } else {
+        estado.innerHTML = `<div class="status-ava">Disponible</div>`;
+      }
+
+      left.appendChild(imgBox);
+      left.appendChild(meta);
+
+      const actions = document.createElement('div');
+      actions.className = 'actions';
+
+      const btnEdit = document.createElement('button');
+      btnEdit.className = 'btn-edit'; btnEdit.textContent = 'Editar';
+      btnEdit.onclick = () => enableEditMode(wrapper, id, data);
+
+      const btnDelete = document.createElement('button');
+      btnDelete.className = 'btn-delete'; btnDelete.textContent = 'Eliminar';
+      btnDelete.onclick = async () => {
+        if(!confirm('Eliminar este turno?')) return;
+        try{
+          await remove(dbRef(db, 'turnos/' + id));
+          showMessage('Turno eliminado', 'success');
+        }catch(err){ console.error(err); showMessage('Error al eliminar', 'error'); }
+      };
+
+      actions.appendChild(btnEdit);
+      actions.appendChild(btnDelete);
+
+      wrapper.appendChild(left);
+      wrapper.appendChild(estado);
+      wrapper.appendChild(actions);
+      return wrapper;
+    }
+
+    function enableEditMode(wrapper, id, data){
+      wrapper.innerHTML = '';
+      const editDiv = document.createElement('div');
+      editDiv.style.display='flex';
+      editDiv.style.gap='8px';
+      editDiv.style.flexWrap='wrap';
+      editDiv.style.alignItems='center';
+
+      const fechaInp = document.createElement('input'); fechaInp.type='date'; fechaInp.value = data.fecha;
+      const horaInp = document.createElement('input'); horaInp.type='time'; horaInp.value = data.hora;
+      const precioInp = document.createElement('input'); precioInp.type='number'; precioInp.value = data.precio;
+      const ubicInp = document.createElement('input'); ubicInp.type='text'; ubicInp.value = data.ubicacion || '';
+      const descInp = document.createElement('input'); descInp.type='text'; descInp.value = data.descripcion || '';
+
+      const estadoSel = document.createElement('select');
+      const o1 = document.createElement('option'); o1.value='disponible'; o1.textContent='disponible';
+      const o2 = document.createElement('option'); o2.value='reservado'; o2.textContent='reservado';
+      estadoSel.appendChild(o1); estadoSel.appendChild(o2);
+      estadoSel.value = data.estado || 'disponible';
+
+      const reservadoInp = document.createElement('input'); reservadoInp.type='text'; reservadoInp.placeholder='Reservado por'; reservadoInp.value = data.reservadoPor || '';
+      const telInp = document.createElement('input'); telInp.type='text'; telInp.placeholder='Teléfono'; telInp.value = data.telefono || data.telefonoWhatsapp || '';
+      const mailInp = document.createElement('input'); mailInp.type='email'; mailInp.placeholder='Email'; mailInp.value = data.emailCliente || '';
+
+      const photosEdit = document.createElement('input'); photosEdit.type='file'; photosEdit.multiple=true; photosEdit.accept='image/*';
+
+      const btnSave = document.createElement('button'); btnSave.className='btn-edit'; btnSave.textContent='Guardar';
+      btnSave.onclick = async () => {
+        try{
+          const nuevaFecha = fechaInp.value; const nuevaHora = horaInp.value;
+          const nuevoPrecio = Number(precioInp.value);
+          if(!nuevaFecha || !nuevaHora || isNaN(nuevoPrecio)){ showMessage('Fecha/hora/precio obligatorios','error'); return; }
+          // if new files, upload and append
+          const newFiles = Array.from(photosEdit.files || []);
+          const urls = Array.isArray(data.imagenes) ? [...data.imagenes] : [];
+          if(newFiles.length){
+            // upload sequentially with progress minimal for edit (no global bar)
+            for(const f of newFiles){
+              const path = 'turnos/' + id + '/' + Date.now() + '_' + f.name;
+              const sRef = storageRef(storage, path);
+              const uploadTask = uploadBytesResumable(sRef, f);
+              await new Promise((res, rej) => {
+                uploadTask.on('state_changed', ()=>{}, (err)=> rej(err), async ()=> {
+                  const url = await getDownloadURL(uploadTask.snapshot.ref);
+                  urls.push(url);
+                  res();
+                });
+              });
+            }
+          }
+          // Save both phone fields for compatibility
+          const phoneVal = telInp.value;
+          await update(dbRef(db, 'turnos/' + id), {
+            fecha:nuevaFecha, hora:nuevaHora, precio:nuevoPrecio,
+            descripcion: descInp.value, ubicacion: ubicInp.value,
+            imagenes: urls,
+            estado: estadoSel.value,
+            reservadoPor: estadoSel.value === 'reservado' ? reservadoInp.value : '',
+            telefono: estadoSel.value === 'reservado' ? phoneVal : '',
+            telefonoWhatsapp: estadoSel.value === 'reservado' ? phoneVal : '',
+            emailCliente: estadoSel.value === 'reservado' ? mailInp.value : ''
+          });
+          showMessage('Turno actualizado', 'success');
+        } catch(err){ console.error(err); showMessage('Error al guardar','error'); }
+      };
+
+      const btnCancel = document.createElement('button'); btnCancel.className='btn-edit'; btnCancel.textContent='Cancelar';
+      btnCancel.onclick = () => {
+        // onValue will re-render automatically
+      };
+
+      editDiv.appendChild(fechaInp); editDiv.appendChild(horaInp); editDiv.appendChild(precioInp);
+      editDiv.appendChild(ubicInp); editDiv.appendChild(descInp);
+      editDiv.appendChild(estadoSel); editDiv.appendChild(reservadoInp); editDiv.appendChild(telInp); editDiv.appendChild(mailInp);
+      editDiv.appendChild(photosEdit); editDiv.appendChild(btnSave); editDiv.appendChild(btnCancel);
+
+      wrapper.appendChild(editDiv);
+    }
+
+    // Escuchar turnos en real time
+    onValue(turnosRef, (snapshot) => {
+      allTurnos = snapshot.val() || {};
+      renderTurnosList();
+    }, (err) => {
+      console.error(err);
+      info.textContent = 'Error de conexión';
+    });
+
+    // Leer logo & promo preview if exists
+    onValue(siteRef, (snap) => {
+      const s = snap.val() || {};
+      logoPreview.innerHTML = '';
+      promoPreview.innerHTML = '';
+      if(s.logoUrl){ logoPreview.innerHTML = `<img src="${s.logoUrl}" alt="Logo" style="height:48px;border-radius:6px">`; }
+      if(s.promocion && s.promocion.imageUrl){ promoPreview.innerHTML = `<img src="${s.promocion.imageUrl}" alt="Promo" style="height:64px;border-radius:6px">`; }
+    });
+
+    function renderTurnosList(){
+      const keys = Object.keys(allTurnos).sort((a,b) => {
+        const A = (allTurnos[a].fecha || '') + ' ' + (allTurnos[a].hora || '');
+        const B = (allTurnos[b].fecha || '') + ' ' + (allTurnos[b].hora || '');
+        return A.localeCompare(B);
+      });
+      turnosList.innerHTML = '';
+      if(keys.length === 0) { turnosList.innerHTML = '<div class="muted">No hay turnos cargados.</div>'; return; }
+      keys.forEach(id => {
+        const el = crearTurnoElemento(id, allTurnos[id]);
+        turnosList.appendChild(el);
+      });
+    }
+
+  </script>
+</body>
+</html>

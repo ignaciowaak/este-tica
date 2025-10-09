@@ -3,56 +3,546 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Admin — Gestión de Turnos</title>
+  <title>Admin Panel — Gestión Profesional de Turnos</title>
+  <!-- Fuentes profesionales -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@200;300;400;500;600;700;800&family=Geist:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
   <style>
     :root{
-      --bg:#f7fafc;
-      --card:#ffffff;
-      --muted:#52606b;
-      --accent:#7dd3fc;
-      --success:#16a34a;
-      --danger:#ef4444;
-      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --muted: #64748b;
+      --accent: #440D13;
+      --accent-light: #5a1119;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --border: #e2e8f0;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --shadow: 0 4px 16px rgba(0,0,0,0.08);
+      --shadow-lg: 0 10px 40px rgba(0,0,0,0.15);
+      --radius: 16px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: 'Geist', system-ui, sans-serif;
     }
-    *{box-sizing:border-box}
-    body{margin:0;background:linear-gradient(180deg,#fbfdff 0%,#f5f8fb 100%);min-height:100vh;display:flex;justify-content:center;padding:18px}
-    main{width:100%;max-width:1100px}
-    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-    h1{margin:0;font-size:1.35rem}
-    .panel{background:var(--card);padding:16px;border-radius:12px;box-shadow:0 8px 24px rgba(11,34,48,0.06)}
-    form{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-bottom:12px}
-    label{font-size:0.85rem;color:var(--muted)}
-    input, select, textarea, button{padding:8px 10px;border-radius:8px;border:1px solid #e6eefb;font-size:1rem}
-    .btn{background:linear-gradient(180deg,var(--accent),#4fc3ff);border:0;color:#033;font-weight:700;cursor:pointer}
-    .grid{display:grid;grid-template-columns: 1fr;gap:10px;margin-top:12px}
-    .turno{display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;background:linear-gradient(180deg,#fff,#fbfeff);box-shadow:0 6px 14px rgba(10,20,30,0.03);justify-content:space-between;flex-wrap:wrap}
-    .left{display:flex;gap:16px;align-items:center}
-    .meta{min-width:160px}
-    .muted{color:var(--muted)}
-    .actions{display:flex;gap:8px;align-items:center}
-    .btn-edit{background:#fff;border:1px solid #cfe9ff;padding:8px 10px;border-radius:8px;cursor:pointer}
-    .btn-delete{background:var(--danger);color:white;padding:8px 10px;border-radius:8px;border:0;cursor:pointer}
-    .status-res{color:var(--danger);font-weight:700}
-    .status-ava{color:var(--success);font-weight:700}
-    .images{display:flex;gap:8px;overflow:auto;padding-top:8px}
-    .images img{height:70px;border-radius:6px;object-fit:cover}
-    .loginBox{max-width:480px;margin:40px auto;padding:18px;background:var(--card);border-radius:12px;box-shadow:0 10px 30px rgba(10,20,30,0.06)}
-    .msg{padding:8px 10px;border-radius:8px;display:inline-block}
-    .msg.success{background:#f0fdf4;color:var(--success);border:1px solid #c7f0d2}
-    .msg.error{background:#fff5f5;color:var(--danger);border:1px solid #ffd4d4}
-
-    /* Progress bar style */
-    .progressWrap{width:100%;background:#eef4fb;border-radius:8px;height:14px;overflow:hidden;margin-top:8px;border:1px solid #d9eefc;display:none}
-    .progressBar{height:100%;width:0%;background:linear-gradient(90deg,#5fb3ff,#3a98ff);transition:width 150ms ease}
-    .progressText{font-size:0.9rem;color:var(--muted);margin-top:6px;display:none}
-
-    /* Promotion preview */
-    .promoPreview img{height:64px;border-radius:6px;object-fit:cover}
-
-    @media (max-width:700px){
-      .left{flex-direction:column;align-items:flex-start}
-      form{flex-direction:column;align-items:stretch}
+    
+    * {
+      box-sizing: border-box;
     }
+    
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 24px;
+      font-family: 'Geist', system-ui, sans-serif;
+      color: var(--text-primary);
+    }
+    
+    main {
+      width: 100%;
+      max-width: 1200px;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Header mejorado */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      padding: 32px;
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+    
+    h1 {
+      margin: 0;
+      font-size: 2.5rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+    
+    header p {
+      margin: 8px 0 0 0;
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      font-family: 'Manrope', sans-serif;
+    }
+    
+    #info {
+      color: var(--muted);
+      font-family: 'Manrope', sans-serif;
+      font-weight: 500;
+      padding: 8px 16px;
+      background: rgba(68, 13, 19, 0.1);
+      border-radius: 8px;
+    }
+    
+    /* Panel de login mejorado */
+    .loginBox {
+      max-width: 480px;
+      margin: 60px auto;
+      padding: 40px;
+      background: var(--card);
+      border-radius: 24px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      animation: slideInUp 0.6s ease-out;
+    }
+
+    @keyframes slideInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .loginBox h3 {
+      margin: 0 0 24px 0;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      text-align: center;
+      color: var(--text-primary);
+    }
+    
+    /* Panel principal mejorado */
+    .panel {
+      background: var(--card);
+      padding: 32px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      animation: slideInUp 0.6s ease-out;
+    }
+    
+    /* Formularios mejorados */
+    form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      align-items: end;
+      margin-bottom: 24px;
+      padding: 24px;
+      background: rgba(248, 250, 252, 0.8);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+    
+    label {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-family: 'Manrope', sans-serif;
+      margin-bottom: 6px;
+      display: block;
+    }
+    
+    input, select, textarea, button {
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      font-size: 1rem;
+      font-family: 'Manrope', sans-serif;
+      transition: var(--transition);
+      outline: none;
+    }
+    
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(68, 13, 19, 0.1);
+      transform: translateY(-1px);
+    }
+    
+    /* Botones mejorados */
+    .btn {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+      border: 0;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      min-width: 120px;
+    }
+    
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s ease;
+    }
+    
+    .btn:hover::before {
+      left: 100%;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(68, 13, 19, 0.3);
+    }
+    
+    .btn:active {
+      transform: translateY(0);
+    }
+    
+    /* Grid de turnos mejorado */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-top: 24px;
+    }
+    
+    /* Tarjetas de turno mejoradas */
+    .turno {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 24px;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, #ffffff 0%, #fafbff 100%);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      justify-content: space-between;
+      flex-wrap: wrap;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .turno::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-light));
+      opacity: 0;
+      transition: var(--transition);
+    }
+    
+    .turno:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .turno:hover::before {
+      opacity: 1;
+    }
+    
+    .left {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      flex: 1;
+    }
+    
+    .meta {
+      min-width: 200px;
+    }
+    
+    .meta strong {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .muted {
+      color: var(--muted);
+      font-family: 'Manrope', sans-serif;
+    }
+    
+    .actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    
+    .btn-edit {
+      background: white;
+      border: 1px solid var(--border);
+      padding: 10px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      font-family: 'Manrope', sans-serif;
+      transition: var(--transition);
+    }
+    
+    .btn-edit:hover {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    
+    .btn-delete {
+      background: var(--danger);
+      color: white;
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: 0;
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+    
+    .btn-delete:hover {
+      background: #dc2626;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+    }
+    
+    /* Estados mejorados */
+    .status-res {
+      color: var(--danger);
+      font-weight: 700;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    
+    .status-ava {
+      color: var(--success);
+      font-weight: 700;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    
+    /* Imágenes mejoradas */
+    .images {
+      display: flex;
+      gap: 12px;
+      overflow: auto;
+      padding: 8px 0;
+    }
+    
+    .images img {
+      height: 80px;
+      width: 80px;
+      border-radius: 12px;
+      object-fit: cover;
+      transition: var(--transition);
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+    
+    .images img:hover {
+      transform: scale(1.1);
+      border-color: var(--accent);
+      box-shadow: 0 8px 25px rgba(68, 13, 19, 0.3);
+    }
+    
+    /* Barras de progreso mejoradas */
+    .progressWrap {
+      width: 100%;
+      background: #f1f5f9;
+      border-radius: 8px;
+      height: 8px;
+      overflow: hidden;
+      margin-top: 12px;
+      border: 1px solid var(--border);
+      display: none;
+    }
+    
+    .progressBar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-light));
+      transition: width 0.3s ease;
+      position: relative;
+    }
+    
+    .progressBar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: progressShine 2s ease-in-out infinite;
+    }
+    
+    @keyframes progressShine {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    
+    .progressText {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-top: 8px;
+      font-family: 'Manrope', sans-serif;
+      font-weight: 500;
+      display: none;
+    }
+    
+    /* Vista previa mejorada */
+    .promoPreview img {
+      height: 80px;
+      width: 120px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 2px solid var(--border);
+      transition: var(--transition);
+    }
+    
+    .promoPreview img:hover {
+      transform: scale(1.05);
+      border-color: var(--accent);
+    }
+    
+    /* Mensajes mejorados */
+    .msg {
+      padding: 16px 20px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+      font-family: 'Manrope', sans-serif;
+      animation: slideIn 0.4s ease-out;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    
+    .msg.success {
+      background: #f0fdf4;
+      color: var(--success);
+      border: 1px solid #bbf7d0;
+    }
+    
+    .msg.error {
+      background: #fef2f2;
+      color: var(--danger);
+      border: 1px solid #fecaca;
+    }
+    
+    .msg.success::before {
+      content: '✅';
+    }
+    
+    .msg.error::before {
+      content: '❌';
+    }
+    
+    /* Campos adicionales para ubicación GPS */
+    .location-inputs {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 12px;
+      align-items: end;
+    }
+    
+    .gps-toggle {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      padding: 8px 12px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .gps-toggle:hover {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+    
+    .gps-toggle.active {
+      background: var(--success);
+      color: white;
+      border-color: var(--success);
+    }
+    
+    /* Responsive mejorado */
+    @media (max-width: 768px) {
+      body {
+        padding: 12px;
+      }
+      
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: center;
+        gap: 16px;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      form {
+        grid-template-columns: 1fr;
+        padding: 20px;
+      }
+      
+      .location-inputs {
+        grid-template-columns: 1fr;
+      }
+      
+      .left {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      
+      .turno {
+        padding: 20px;
+        gap: 16px;
+      }
+      
+      .actions {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      
+      .loginBox {
+        margin: 20px auto;
+        padding: 24px;
+      }
+    }
+    
+    /* Loading spinner */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #f3f3f3;
+      border-top: 2px solid var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 8px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
   </style>
 </head>
 <body>
@@ -60,107 +550,136 @@
     <header>
       <div>
         <h1>Panel de Administración</h1>
-        <p class="muted">Iniciá sesión para administrar turnos y ver reservas.</p>
+        <p>Gestión profesional de turnos y reservas</p>
       </div>
-      <div id="info" class="muted">Conectando...</div>
+      <div id="info">Conectando...</div>
     </header>
 
-    <!-- LOGIN -->
+    <!-- PANTALLA DE LOGIN -->
     <div id="loginScreen" class="loginBox" aria-live="polite">
-      <h3>Iniciar sesión (admin)</h3>
-      <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
-        <input id="adminEmail" type="email" placeholder="email@dominio.com" required>
-        <input id="adminPass" type="password" placeholder="Contraseña" required>
-        <div style="display:flex;gap:8px;align-items:center">
-          <button id="btnLogin" class="btn">Entrar</button>
+      <h3>🔐 Acceso Administrativo</h3>
+      <div style="display:flex;flex-direction:column;gap:16px;margin-top:24px">
+        <input id="adminEmail" type="email" placeholder="admin@ejemplo.com" required>
+        <input id="adminPass" type="password" placeholder="Contraseña de administrador" required>
+        <div style="display:flex;gap:12px;align-items:center;">
+          <button id="btnLogin" class="btn">
+            <span id="loginSpinner" class="loading" style="display:none;"></span>
+            Iniciar Sesión
+          </button>
           <div id="loginMsg" class="muted"></div>
         </div>
       </div>
     </div>
 
-    <!-- PANEL -->
+    <!-- PANEL PRINCIPAL -->
     <section id="panel" class="panel" style="display:none">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+      <!-- Info del usuario -->
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:32px;">
         <div>
-          <strong>Logueado como:</strong> <span id="whoami"></span>
+          <strong style="font-family:'Space Grotesk',sans-serif;">Sesión activa:</strong> 
+          <span id="whoami" style="color:var(--accent);font-weight:600;"></span>
         </div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <button id="btnLogout" class="btn" style="background:#ffd166;color:#042">Cerrar sesión</button>
+        <button id="btnLogout" class="btn" style="background:var(--warning);color:white;">
+          Cerrar Sesión
+        </button>
+      </div>
+
+      <hr style="margin:32px 0;border:none;height:1px;background:var(--border);">
+
+      <!-- Gestión de Logo -->
+      <div style="margin-bottom:32px;padding:24px;background:rgba(16,185,129,0.05);border-radius:var(--radius);border:1px solid rgba(16,185,129,0.2);">
+        <h3 style="margin:0 0 20px 0;font-family:'Space Grotesk',sans-serif;color:var(--success);">🖼️ Logo del Sitio</h3>
+        <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
+          <div>
+            <label><strong>Seleccionar logo</strong></label>
+            <input id="logoFile" type="file" accept="image/*" style="margin-top:8px;">
+          </div>
+          <button id="uploadLogoBtn" class="btn">Subir Logo</button>
+          <div id="logoPreview" style="display:flex;align-items:center;gap:12px;"></div>
         </div>
       </div>
 
-      <hr style="margin:12px 0">
-
-      <!-- Logo -->
-      <div style="margin-bottom:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
-        <div>
-          <label><strong>Logo para la web cliente</strong></label><br>
-          <input id="logoFile" type="file" accept="image/*">
+      <!-- Gestión de Promoción -->
+      <div style="margin-bottom:32px;padding:24px;background:rgba(245,158,11,0.05);border-radius:var(--radius);border:1px solid rgba(245,158,11,0.2);">
+        <h3 style="margin:0 0 20px 0;font-family:'Space Grotesk',sans-serif;color:var(--warning);">🎉 Imagen Promocional</h3>
+        <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:16px;">
+          <div>
+            <label><strong>Seleccionar promoción</strong></label>
+            <input id="promoFile" type="file" accept="image/*" style="margin-top:8px;">
+          </div>
+          <button id="uploadPromoBtn" class="btn">Subir Promoción</button>
+          <div class="promoPreview" id="promoPreview"></div>
+          <button id="deletePromoBtn" class="btn-delete">Eliminar Promoción</button>
         </div>
-        <div>
-          <button id="uploadLogoBtn" class="btn">Subir logo</button>
+        <div class="progressWrap" id="promoProgressWrap">
+          <div class="progressBar" id="promoProgressBar"></div>
         </div>
-        <div id="logoPreview" style="display:flex;align-items:center;gap:8px"></div>
-      </div>
-
-      <!-- PROMOCION -->
-      <div style="margin-bottom:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
-        <div>
-          <label><strong>Promoción (imagen grande para cliente)</strong></label><br>
-          <input id="promoFile" type="file" accept="image/*">
-        </div>
-        <div>
-          <button id="uploadPromoBtn" class="btn">Subir promoción</button>
-        </div>
-        <div class="promoPreview" id="promoPreview"></div>
-        <div style="margin-left:auto">
-          <button id="deletePromoBtn" class="btn-edit">Eliminar promo</button>
-        </div>
-        <div class="progressWrap" id="promoProgressWrap"><div class="progressBar" id="promoProgressBar"></div></div>
         <div class="progressText" id="promoProgressText"></div>
       </div>
 
-      <!-- Form agregar turno -->
-      <form id="formAdd" onsubmit="return false;">
-        <div>
-          <label for="fecha">Fecha</label><br>
-          <input id="fecha" type="date" required>
-        </div>
-        <div>
-          <label for="hora">Hora</label><br>
-          <input id="hora" type="time" required>
-        </div>
-        <div>
-          <label for="precio">Precio (ARS)</label><br>
-          <input id="precio" type="number" min="0" required placeholder="3000">
-        </div>
-        <div style="flex:1;min-width:240px">
-          <label for="ubicacion">Ubicación</label><br>
-          <input id="ubicacion" type="text" placeholder="Calle, local, ciudad">
-        </div>
-        <div style="flex-basis:100%">
-          <label for="descripcion">Descripción / detalles</label><br>
-          <textarea id="descripcion" rows="2" style="width:100%;border-radius:8px"></textarea>
-        </div>
-        <div style="flex-basis:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <!-- Formulario para agregar turnos -->
+      <div style="margin-bottom:32px;padding:24px;background:rgba(68,13,19,0.05);border-radius:var(--radius);border:1px solid rgba(68,13,19,0.2);">
+        <h3 style="margin:0 0 24px 0;font-family:'Space Grotesk',sans-serif;color:var(--accent);">➕ Agregar Nuevo Turno</h3>
+        
+        <form id="formAdd" onsubmit="return false;">
           <div>
-            <label>Fotos del turno (múltiples)</label><br>
-            <input id="photos" type="file" accept="image/*" multiple>
+            <label for="fecha">📅 Fecha</label>
+            <input id="fecha" type="date" required>
           </div>
           <div>
-            <button id="addBtn" class="btn" style="height:40px;">Agregar turno</button>
+            <label for="hora">🕐 Hora</label>
+            <input id="hora" type="time" required>
           </div>
-        </div>
+          <div>
+            <label for="precio">💰 Precio (ARS)</label>
+            <input id="precio" type="number" min="0" required placeholder="5000">
+          </div>
+          
+          <!-- Campos de ubicación mejorados con GPS -->
+          <div class="location-inputs">
+            <div>
+              <label for="ubicacion">📍 Ubicación / Dirección</label>
+              <input id="ubicacion" type="text" placeholder="Calle, número, ciudad" style="width:100%;">
+            </div>
+            <div>
+              <label for="latitud">🌐 Latitud (opcional)</label>
+              <input id="latitud" type="number" step="any" placeholder="-34.6037">
+            </div>
+            <div>
+              <label for="longitud">🌐 Longitud (opcional)</label>
+              <input id="longitud" type="number" step="any" placeholder="-58.3816">
+            </div>
+          </div>
+          
+          <div style="grid-column: 1 / -1;">
+            <label for="descripcion">📝 Descripción / Detalles</label>
+            <textarea id="descripcion" rows="3" style="width:100%;border-radius:12px;resize:vertical;" placeholder="Descripción detallada del servicio..."></textarea>
+          </div>
+          
+          <div style="grid-column: 1 / -1;display:flex;gap:16px;align-items:end;flex-wrap:wrap;">
+            <div style="flex:1;min-width:200px;">
+              <label>🖼️ Fotos del turno (múltiples)</label>
+              <input id="photos" type="file" accept="image/*" multiple style="margin-top:8px;">
+            </div>
+            <button id="addBtn" class="btn" style="height:48px;min-width:160px;">
+              <span id="addSpinner" class="loading" style="display:none;"></span>
+              Agregar Turno
+            </button>
+          </div>
 
-        <!-- Upload progress for adding turno -->
-        <div class="progressWrap" id="turnoProgressWrap"><div class="progressBar" id="turnoProgressBar"></div></div>
-        <div class="progressText" id="turnoProgressText"></div>
-      </form>
+          <!-- Barra de progreso para subida -->
+          <div class="progressWrap" id="turnoProgressWrap" style="grid-column: 1 / -1;">
+            <div class="progressBar" id="turnoProgressBar"></div>
+          </div>
+          <div class="progressText" id="turnoProgressText" style="grid-column: 1 / -1;"></div>
+        </form>
+      </div>
 
-      <div id="messageArea"></div>
+      <div id="messageArea" style="margin-bottom:24px;"></div>
 
-      <div style="margin-top:12px">
-        <h3 style="margin:0 0 8px 0">Turnos existentes</h3>
+      <!-- Lista de turnos -->
+      <div style="margin-top:32px">
+        <h3 style="margin:0 0 24px 0;font-family:'Space Grotesk',sans-serif;font-size:1.8rem;">📋 Turnos Registrados</h3>
         <div id="turnosList" class="grid" aria-live="polite"></div>
       </div>
     </section>
@@ -193,10 +712,11 @@
     const turnosRef = dbRef(db, 'turnos');
     const siteRef = dbRef(db, 'site');
 
-    // UI elements
+    // Elementos UI
     const loginScreen = document.getElementById('loginScreen');
     const panel = document.getElementById('panel');
     const btnLogin = document.getElementById('btnLogin');
+    const loginSpinner = document.getElementById('loginSpinner');
     const adminEmailInp = document.getElementById('adminEmail');
     const adminPassInp = document.getElementById('adminPass');
     const loginMsg = document.getElementById('loginMsg');
@@ -204,27 +724,33 @@
     const btnLogout = document.getElementById('btnLogout');
     const info = document.getElementById('info');
     const addBtn = document.getElementById('addBtn');
+    const addSpinner = document.getElementById('addSpinner');
     const turnosList = document.getElementById('turnosList');
     const messageArea = document.getElementById('messageArea');
+
+    // Inputs del formulario
     const fechaInput = document.getElementById('fecha');
     const horaInput = document.getElementById('hora');
     const precioInput = document.getElementById('precio');
     const ubicacionInput = document.getElementById('ubicacion');
+    const latitudInput = document.getElementById('latitud');
+    const longitudInput = document.getElementById('longitud');
     const descripcionInput = document.getElementById('descripcion');
     const photosInput = document.getElementById('photos');
 
+    // Logo y promoción
     const logoFile = document.getElementById('logoFile');
     const uploadLogoBtn = document.getElementById('uploadLogoBtn');
     const logoPreview = document.getElementById('logoPreview');
-
     const promoFile = document.getElementById('promoFile');
     const uploadPromoBtn = document.getElementById('uploadPromoBtn');
     const promoPreview = document.getElementById('promoPreview');
     const deletePromoBtn = document.getElementById('deletePromoBtn');
+
+    // Progress bars
     const promoProgressWrap = document.getElementById('promoProgressWrap');
     const promoProgressBar = document.getElementById('promoProgressBar');
     const promoProgressText = document.getElementById('promoProgressText');
-
     const turnoProgressWrap = document.getElementById('turnoProgressWrap');
     const turnoProgressBar = document.getElementById('turnoProgressBar');
     const turnoProgressText = document.getElementById('turnoProgressText');
@@ -232,7 +758,8 @@
     let currentAdminEmail = null;
     let allTurnos = {};
 
-    function showMessage(text, type='success', timeout=3500){
+    // Función para mostrar mensajes mejorada
+    function showMessage(text, type='success', timeout=4000){
       messageArea.innerHTML = '';
       const d = document.createElement('div');
       d.className = 'msg ' + (type === 'success' ? 'success' : 'error');
@@ -241,13 +768,17 @@
       setTimeout(()=> { if(messageArea.contains(d)) messageArea.removeChild(d); }, timeout);
     }
 
-    // Login flow
+    // Función de login mejorada
     async function attemptLogin(email, password){
       try{
-        loginMsg.textContent = 'Verificando...';
+        loginSpinner.style.display = 'inline-block';
+        btnLogin.disabled = true;
+        loginMsg.textContent = 'Verificando credenciales...';
+        
         const snap = await get(adminsRef);
         const admins = snap.val() || {};
         let found = false;
+        
         for(const k of Object.keys(admins)){
           const a = admins[k];
           if(a.email === email && (a.password === password)){
@@ -255,32 +786,48 @@
             break;
           }
         }
+        
         if(found){
           currentAdminEmail = email;
           sessionStorage.setItem('adminEmail', email);
           renderPanelForAdmin();
+          showMessage('¡Bienvenido al panel de administración!', 'success');
         } else {
-          loginMsg.textContent = 'Usuario/contraseña inválidos';
-          setTimeout(()=> loginMsg.textContent = '', 2500);
+          loginMsg.textContent = 'Credenciales incorrectas';
+          setTimeout(()=> loginMsg.textContent = '', 3000);
         }
       } catch(err){
         console.error(err);
-        loginMsg.textContent = 'Error al verificar (ver consola)';
+        loginMsg.textContent = 'Error de conexión. Intenta nuevamente.';
+        setTimeout(()=> loginMsg.textContent = '', 3000);
+      } finally {
+        loginSpinner.style.display = 'none';
+        btnLogin.disabled = false;
       }
     }
 
     btnLogin.addEventListener('click', (e) => {
       const email = adminEmailInp.value.trim();
       const pass = adminPassInp.value;
-      if(!email || !pass){ loginMsg.textContent = 'Completá email y contraseña'; return; }
+      if(!email || !pass){ 
+        loginMsg.textContent = 'Completá email y contraseña'; 
+        return; 
+      }
       attemptLogin(email, pass);
+    });
+
+    // Enter key para login
+    adminPassInp.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        btnLogin.click();
+      }
     });
 
     function renderPanelForAdmin(){
       loginScreen.style.display = 'none';
       panel.style.display = 'block';
       whoami.textContent = currentAdminEmail;
-      info.textContent = 'Conectado como admin';
+      info.textContent = 'Panel administrativo activo';
     }
 
     btnLogout.addEventListener('click', () => {
@@ -288,150 +835,169 @@
       currentAdminEmail = null;
       loginScreen.style.display = 'block';
       panel.style.display = 'none';
-      info.textContent = 'Desconectado';
+      info.textContent = 'Sesión cerrada';
+      showMessage('Sesión cerrada correctamente', 'success');
     });
 
-    // If saved session
+    // Verificar sesión guardada
     const saved = sessionStorage.getItem('adminEmail');
     if(saved){
       currentAdminEmail = saved;
       renderPanelForAdmin();
     }
 
-    // Upload logo (uses update so it doesn't overwrite other site keys)
+    // Subida de logo mejorada
     uploadLogoBtn.addEventListener('click', async () => {
       const file = logoFile.files[0];
-      if(!file){ showMessage('Seleccioná un archivo de imagen para el logo', 'error'); return; }
+      if(!file){ 
+        showMessage('Selecciona un archivo de imagen para el logo', 'error'); 
+        return; 
+      }
+      
       try{
-        const t = Date.now();
-        const path = 'site/logo_' + t + '_' + file.name;
+        uploadLogoBtn.disabled = true;
+        uploadLogoBtn.innerHTML = '<span class="loading"></span> Subiendo...';
+        
+        const timestamp = Date.now();
+        const path = 'site/logo_' + timestamp + '_' + file.name;
         const sRef = storageRef(storage, path);
         const uploadTask = uploadBytesResumable(sRef, file);
-        // show small progress
+        
         promoProgressWrap.style.display = 'block';
         promoProgressBar.style.width = '0%';
         promoProgressText.style.display = 'block';
         promoProgressText.textContent = 'Subiendo logo... 0%';
+        
         uploadTask.on('state_changed', (snapshot) => {
           const pct = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
           promoProgressBar.style.width = pct + '%';
           promoProgressText.textContent = 'Subiendo logo... ' + pct + '%';
         }, (err) => {
           console.error(err);
-          showMessage('Error subiendo logo', 'error');
+          showMessage('Error al subir el logo', 'error');
           promoProgressWrap.style.display = 'none';
           promoProgressText.style.display = 'none';
         }, async () => {
           const url = await getDownloadURL(uploadTask.snapshot.ref);
-          // update (not set) so we don't overwrite site object
           await update(siteRef, { logoUrl: url });
-          logoPreview.innerHTML = `<img src="${url}" alt="Logo" style="height:48px;border-radius:6px">`;
+          logoPreview.innerHTML = `<img src="${url}" alt="Logo" style="height:64px;width:auto;border-radius:12px;border:2px solid var(--success);">`;
           promoProgressWrap.style.display = 'none';
           promoProgressText.style.display = 'none';
-          showMessage('Logo subido y guardado', 'success');
+          showMessage('Logo subido y actualizado correctamente', 'success');
         });
       } catch(err){
         console.error(err);
-        showMessage('Error subiendo logo', 'error');
+        showMessage('Error al procesar el logo', 'error');
+      } finally {
+        uploadLogoBtn.disabled = false;
+        uploadLogoBtn.innerHTML = 'Subir Logo';
       }
     });
 
-    // Upload promotion (image only) and save under site.promocion
+    // Subida de promoción mejorada
     uploadPromoBtn.addEventListener('click', async () => {
       const file = promoFile.files[0];
-      if(!file){ showMessage('Seleccioná una imagen de promoción', 'error'); return; }
+      if(!file){ 
+        showMessage('Selecciona una imagen de promoción', 'error'); 
+        return; 
+      }
+      
       try{
         uploadPromoBtn.disabled = true;
+        uploadPromoBtn.innerHTML = '<span class="loading"></span> Subiendo...';
+        
         promoProgressWrap.style.display = 'block';
         promoProgressBar.style.width = '0%';
         promoProgressText.style.display = 'block';
-        promoProgressText.textContent = 'Subiendo promoción 0%';
+        promoProgressText.textContent = 'Subiendo promoción... 0%';
 
         const path = 'site/promo_' + Date.now() + '_' + file.name;
         const sRef = storageRef(storage, path);
         const uploadTask = uploadBytesResumable(sRef, file);
+        
         uploadTask.on('state_changed', (snapshot) => {
           const pct = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
           promoProgressBar.style.width = pct + '%';
-          promoProgressText.textContent = 'Subiendo promoción ' + pct + '%';
+          promoProgressText.textContent = 'Subiendo promoción... ' + pct + '%';
         }, (err) => {
           console.error(err);
-          showMessage('Error subiendo promoción', 'error');
+          showMessage('Error al subir la promoción', 'error');
           uploadPromoBtn.disabled = false;
+          uploadPromoBtn.innerHTML = 'Subir Promoción';
           promoProgressWrap.style.display = 'none';
           promoProgressText.style.display = 'none';
         }, async () => {
           const url = await getDownloadURL(uploadTask.snapshot.ref);
-          // Save under site.promocion
           await update(siteRef, { promocion: { imageUrl: url, createdAt: Date.now() } });
-          promoPreview.innerHTML = `<img src="${url}" alt="Promo" style="height:64px;border-radius:6px">`;
+          promoPreview.innerHTML = `<img src="${url}" alt="Promoción" style="height:80px;width:120px;border-radius:12px;border:2px solid var(--warning);">`;
           promoProgressWrap.style.display = 'none';
           promoProgressText.style.display = 'none';
           uploadPromoBtn.disabled = false;
-          showMessage('Promoción subida', 'success');
+          uploadPromoBtn.innerHTML = 'Subir Promoción';
+          showMessage('Promoción subida correctamente', 'success');
         });
       } catch(err){
         console.error(err);
         uploadPromoBtn.disabled = false;
+        uploadPromoBtn.innerHTML = 'Subir Promoción';
         promoProgressWrap.style.display = 'none';
         promoProgressText.style.display = 'none';
-        showMessage('Error al subir promoción', 'error');
+        showMessage('Error al procesar la promoción', 'error');
       }
     });
 
+    // Eliminar promoción
     deletePromoBtn.addEventListener('click', async () => {
-      if(!confirm('Eliminar la promoción actual?')) return;
+      if(!confirm('¿Estás seguro de eliminar la promoción actual?')) return;
+      
       try{
-        // Read site to get promo url (and attempt delete if exists)
-        const siteSnap = await get(siteRef);
-        const site = siteSnap.val() || {};
-        const promo = site.promocion || {};
-        if(promo.imageUrl){
-          try{
-            // Try delete by constructing storage ref from URL path — may fail due to different domain, so we skip deleteObject for safety.
-          } catch(e){ /* ignore */ }
-        }
-        // Remove promo key
         await update(siteRef, { promocion: null });
         promoPreview.innerHTML = '';
-        showMessage('Promoción eliminada', 'success');
+        showMessage('Promoción eliminada correctamente', 'success');
       } catch(err){
         console.error(err);
-        showMessage('Error eliminando promoción', 'error');
+        showMessage('Error al eliminar la promoción', 'error');
       }
     });
 
-    // Agregar turno con subida de imágenes y barra de progreso agregada
+    // Agregar turno mejorado con GPS
     addBtn.addEventListener('click', async (e) => {
       e.preventDefault();
-      // Prevent double click
       if(addBtn.disabled) return;
+      
       try{
         const fecha = fechaInput.value;
         const hora = horaInput.value;
         const precio = Number(precioInput.value);
         const descripcion = descripcionInput.value.trim();
         const ubicacion = ubicacionInput.value.trim();
+        const latitud = latitudInput.value ? Number(latitudInput.value) : null;
+        const longitud = longitudInput.value ? Number(longitudInput.value) : null;
+        
         if(!fecha || !hora || isNaN(precio)){
-          showMessage('Completá fecha, hora y precio.', 'error'); return;
+          showMessage('Completá fecha, hora y precio correctamente.', 'error'); 
+          return;
         }
 
-        // disable UI
+        // Deshabilitar UI
         addBtn.disabled = true;
+        addSpinner.style.display = 'inline-block';
         fechaInput.disabled = true;
         horaInput.disabled = true;
         precioInput.disabled = true;
         ubicacionInput.disabled = true;
+        latitudInput.disabled = true;
+        longitudInput.disabled = true;
         descripcionInput.disabled = true;
         photosInput.disabled = true;
 
-        // Show progress UI
+        // Mostrar progreso
         turnoProgressWrap.style.display = 'block';
         turnoProgressBar.style.width = '0%';
         turnoProgressText.style.display = 'block';
-        turnoProgressText.textContent = 'Preparando subida... 0%';
+        turnoProgressText.textContent = 'Preparando turno... 0%';
 
-        // create push key first
+        // Crear referencia
         const newRef = push(turnosRef);
         const id = newRef.key;
 
@@ -439,7 +1005,6 @@
         let uploadedUrls = [];
 
         if(files.length){
-          // compute totalBytes
           const totalBytes = files.reduce((s,f)=> s+f.size, 0);
           let cumulativeTransferred = 0;
 
@@ -448,37 +1013,30 @@
             const sRef = storageRef(storage, path);
             const uploadTask = uploadBytesResumable(sRef, file);
 
-            // track for each file
             await new Promise((resolve, reject) => {
-              let lastSnapshotTransferred = 0;
               uploadTask.on('state_changed', snapshot => {
-                // compute percent relative to totalBytes
                 const bytesTransferred = snapshot.bytesTransferred;
-                // progress = (cumulativeTransferred + bytesTransferred) / totalBytes
                 const pct = Math.round(((cumulativeTransferred + bytesTransferred) / totalBytes) * 100);
                 turnoProgressBar.style.width = pct + '%';
                 turnoProgressText.textContent = 'Subiendo imágenes... ' + pct + '%';
-                lastSnapshotTransferred = bytesTransferred;
               }, (err) => {
                 console.error(err);
                 reject(err);
               }, async () => {
-                // file finished
                 const url = await getDownloadURL(uploadTask.snapshot.ref);
                 uploadedUrls.push(url);
-                cumulativeTransferred += file.size; // add entire file size
+                cumulativeTransferred += file.size;
                 resolve();
               });
             });
           }
         } else {
-          // no files: just update progress to 90% then 100%
-          turnoProgressBar.style.width = '60%';
-          turnoProgressText.textContent = 'Sin imágenes: guardando turno...';
+          turnoProgressBar.style.width = '80%';
+          turnoProgressText.textContent = 'Guardando turno...';
         }
 
-        // Save turno in DB
-        await set(newRef, {
+        // Guardar en DB con coordenadas GPS
+        const turnoData = {
           fecha,
           hora,
           precio,
@@ -490,94 +1048,146 @@
           telefonoWhatsapp: "",
           emailCliente: "",
           estado: "disponible"
-        });
+        };
 
-        // finalize progress
+        // Agregar coordenadas si están disponibles
+        if (latitud && longitud) {
+          turnoData.lat = latitud;
+          turnoData.lng = longitud;
+        }
+
+        await set(newRef, turnoData);
+
+        // Finalizar progreso
         turnoProgressBar.style.width = '100%';
         turnoProgressText.textContent = '✅ Turno agregado correctamente';
-        // short delay for UX
+        
         setTimeout(() => {
           turnoProgressWrap.style.display = 'none';
           turnoProgressText.style.display = 'none';
-        }, 900);
+        }, 1200);
 
-        // reset form
-        fechaInput.value=''; horaInput.value=''; precioInput.value=''; descripcionInput.value=''; ubicacionInput.value=''; photosInput.value='';
+        // Reset form
+        fechaInput.value=''; 
+        horaInput.value=''; 
+        precioInput.value=''; 
+        descripcionInput.value=''; 
+        ubicacionInput.value=''; 
+        latitudInput.value='';
+        longitudInput.value='';
+        photosInput.value='';
 
-        showMessage('Turno cargado ✅', 'success');
+        showMessage('¡Turno creado exitosamente!', 'success');
       } catch(err){
         console.error(err);
-        showMessage('Error al agregar turno', 'error');
+        showMessage('Error al crear el turno. Intenta nuevamente.', 'error');
       } finally {
-        // re-enable UI
+        // Re-habilitar UI
         addBtn.disabled = false;
+        addSpinner.style.display = 'none';
         fechaInput.disabled = false;
         horaInput.disabled = false;
         precioInput.disabled = false;
         ubicacionInput.disabled = false;
+        latitudInput.disabled = false;
+        longitudInput.disabled = false;
         descripcionInput.disabled = false;
         photosInput.disabled = false;
       }
     });
 
+    // Función para crear elemento de turno mejorado
     function crearTurnoElemento(id, data){
       const wrapper = document.createElement('div');
       wrapper.className = 'turno';
+      
       const left = document.createElement('div');
       left.className = 'left';
 
+      // Sección de imágenes
       const imgBox = document.createElement('div');
-      imgBox.style.display='flex'; imgBox.style.flexDirection='column'; imgBox.style.gap='6px';
       const imagesRow = document.createElement('div');
       imagesRow.className = 'images';
+      
       if(Array.isArray(data.imagenes) && data.imagenes.length){
-        data.imagenes.forEach(u => {
+        data.imagenes.forEach(url => {
           const img = document.createElement('img');
-          img.src = u; img.alt='img';
+          img.src = url; 
+          img.alt = 'Imagen del turno';
+          img.onclick = () => window.open(url, '_blank');
           imagesRow.appendChild(img);
         });
       } else {
-        const p = document.createElement('div'); p.className='muted'; p.textContent='Sin imágenes';
-        imagesRow.appendChild(p);
+        const placeholder = document.createElement('div');
+        placeholder.style.cssText = `
+          width:80px; height:80px; border-radius:12px; 
+          background:#f1f5f9; display:flex; align-items:center; 
+          justify-content:center; color:var(--muted); font-size:0.8rem;
+          border:2px dashed var(--border);
+        `;
+        placeholder.textContent = 'Sin fotos';
+        imagesRow.appendChild(placeholder);
       }
       imgBox.appendChild(imagesRow);
 
+      // Información del turno
       const meta = document.createElement('div');
       meta.className = 'meta';
-      meta.innerHTML = `<div><strong>${data.fecha}</strong> <span class="muted">| ${data.hora}</span></div>
-                        <div class="muted">Precio: $${Number(data.precio||0).toLocaleString('es-AR')}</div>
-                        <div class="muted">Ubicación: ${data.ubicacion || '-'}</div>
-                        <div style="margin-top:6px">${data.descripcion || ''}</div>`;
+      
+      // Construir información de ubicación
+      let locationInfo = data.ubicacion || 'Ubicación no especificada';
+      if (data.lat && data.lng) {
+        locationInfo += ` (GPS: ${data.lat.toFixed(4)}, ${data.lng.toFixed(4)})`;
+      }
+      
+      meta.innerHTML = `
+        <div><strong>${data.fecha || 'Sin fecha'}</strong> 
+        <span class="muted">• ${data.hora || 'Sin hora'}</span></div>
+        <div class="muted">💰 Precio: $${Number(data.precio||0).toLocaleString('es-AR')}</div>
+        <div class="muted">📍 ${locationInfo}</div>
+        <div style="margin-top:12px;line-height:1.4;">${data.descripcion || 'Sin descripción'}</div>
+      `;
 
+      // Estado del turno
       const estado = document.createElement('div');
       if(data.estado === 'reservado'){
-        // show name, phone (compatibility), and email
-        const phoneVisible = data.telefono || data.telefonoWhatsapp || '';
-        estado.innerHTML = `<div class="status-res">Reservado</div>
-                            <div class="muted">Por: ${data.reservadoPor || ''}</div>
-                            <div class="muted">Tel: ${phoneVisible} • Mail: ${data.emailCliente || ''}</div>`;
+        const phoneVisible = data.telefono || data.telefonoWhatsapp || 'No especificado';
+        estado.innerHTML = `
+          <div class="status-res">🔒 Reservado</div>
+          <div class="muted" style="margin-top:8px;">
+            <strong>Cliente:</strong> ${data.reservadoPor || 'No especificado'}<br>
+            <strong>Teléfono:</strong> ${phoneVisible}<br>
+            <strong>Email:</strong> ${data.emailCliente || 'No especificado'}
+          </div>
+        `;
       } else {
-        estado.innerHTML = `<div class="status-ava">Disponible</div>`;
+        estado.innerHTML = `<div class="status-ava">✅ Disponible</div>`;
       }
 
       left.appendChild(imgBox);
       left.appendChild(meta);
 
+      // Acciones
       const actions = document.createElement('div');
       actions.className = 'actions';
 
       const btnEdit = document.createElement('button');
-      btnEdit.className = 'btn-edit'; btnEdit.textContent = 'Editar';
+      btnEdit.className = 'btn-edit'; 
+      btnEdit.textContent = '✏️ Editar';
       btnEdit.onclick = () => enableEditMode(wrapper, id, data);
 
       const btnDelete = document.createElement('button');
-      btnDelete.className = 'btn-delete'; btnDelete.textContent = 'Eliminar';
+      btnDelete.className = 'btn-delete'; 
+      btnDelete.textContent = '🗑️ Eliminar';
       btnDelete.onclick = async () => {
-        if(!confirm('Eliminar este turno?')) return;
+        if(!confirm('¿Eliminar este turno permanentemente?')) return;
         try{
           await remove(dbRef(db, 'turnos/' + id));
-          showMessage('Turno eliminado', 'success');
-        }catch(err){ console.error(err); showMessage('Error al eliminar', 'error'); }
+          showMessage('Turno eliminado correctamente', 'success');
+        }catch(err){ 
+          console.error(err); 
+          showMessage('Error al eliminar el turno', 'error'); 
+        }
       };
 
       actions.appendChild(btnEdit);
@@ -586,50 +1196,112 @@
       wrapper.appendChild(left);
       wrapper.appendChild(estado);
       wrapper.appendChild(actions);
+      
       return wrapper;
     }
 
+    // Función para modo edición (mejorada con GPS)
     function enableEditMode(wrapper, id, data){
       wrapper.innerHTML = '';
       const editDiv = document.createElement('div');
-      editDiv.style.display='flex';
-      editDiv.style.gap='8px';
-      editDiv.style.flexWrap='wrap';
-      editDiv.style.alignItems='center';
+      editDiv.style.cssText = `
+        display:grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap:12px;
+        align-items:center;
+        padding:20px;
+        background:rgba(68,13,19,0.05);
+        border-radius:12px;
+      `;
 
-      const fechaInp = document.createElement('input'); fechaInp.type='date'; fechaInp.value = data.fecha;
-      const horaInp = document.createElement('input'); horaInp.type='time'; horaInp.value = data.hora;
-      const precioInp = document.createElement('input'); precioInp.type='number'; precioInp.value = data.precio;
-      const ubicInp = document.createElement('input'); ubicInp.type='text'; ubicInp.value = data.ubicacion || '';
-      const descInp = document.createElement('input'); descInp.type='text'; descInp.value = data.descripcion || '';
+      const fechaInp = document.createElement('input'); 
+      fechaInp.type='date'; 
+      fechaInp.value = data.fecha || '';
+      
+      const horaInp = document.createElement('input'); 
+      horaInp.type='time'; 
+      horaInp.value = data.hora || '';
+      
+      const precioInp = document.createElement('input'); 
+      precioInp.type='number'; 
+      precioInp.value = data.precio || '';
+      
+      const ubicInp = document.createElement('input'); 
+      ubicInp.type='text'; 
+      ubicInp.value = data.ubicacion || '';
+      ubicInp.placeholder = 'Ubicación';
+      
+      const latInp = document.createElement('input');
+      latInp.type='number';
+      latInp.step='any';
+      latInp.value = data.lat || '';
+      latInp.placeholder = 'Latitud';
+      
+      const lngInp = document.createElement('input');
+      lngInp.type='number';
+      lngInp.step='any';
+      lngInp.value = data.lng || '';
+      lngInp.placeholder = 'Longitud';
+      
+      const descInp = document.createElement('textarea'); 
+      descInp.value = data.descripcion || '';
+      descInp.placeholder = 'Descripción';
+      descInp.style.cssText = 'grid-column: 1 / -1; border-radius:8px; min-height:60px;';
 
       const estadoSel = document.createElement('select');
-      const o1 = document.createElement('option'); o1.value='disponible'; o1.textContent='disponible';
-      const o2 = document.createElement('option'); o2.value='reservado'; o2.textContent='reservado';
+      const o1 = document.createElement('option'); o1.value='disponible'; o1.textContent='✅ Disponible';
+      const o2 = document.createElement('option'); o2.value='reservado'; o2.textContent='🔒 Reservado';
       estadoSel.appendChild(o1); estadoSel.appendChild(o2);
       estadoSel.value = data.estado || 'disponible';
 
-      const reservadoInp = document.createElement('input'); reservadoInp.type='text'; reservadoInp.placeholder='Reservado por'; reservadoInp.value = data.reservadoPor || '';
-      const telInp = document.createElement('input'); telInp.type='text'; telInp.placeholder='Teléfono'; telInp.value = data.telefono || data.telefonoWhatsapp || '';
-      const mailInp = document.createElement('input'); mailInp.type='email'; mailInp.placeholder='Email'; mailInp.value = data.emailCliente || '';
+      const reservadoInp = document.createElement('input'); 
+      reservadoInp.type='text'; 
+      reservadoInp.placeholder='Cliente'; 
+      reservadoInp.value = data.reservadoPor || '';
+      
+      const telInp = document.createElement('input'); 
+      telInp.type='text'; 
+      telInp.placeholder='Teléfono'; 
+      telInp.value = data.telefono || data.telefonoWhatsapp || '';
+      
+      const mailInp = document.createElement('input'); 
+      mailInp.type='email'; 
+      mailInp.placeholder='Email'; 
+      mailInp.value = data.emailCliente || '';
 
-      const photosEdit = document.createElement('input'); photosEdit.type='file'; photosEdit.multiple=true; photosEdit.accept='image/*';
+      const photosEdit = document.createElement('input'); 
+      photosEdit.type='file'; 
+      photosEdit.multiple=true; 
+      photosEdit.accept='image/*';
+      photosEdit.style.cssText = 'grid-column: 1 / -1;';
 
-      const btnSave = document.createElement('button'); btnSave.className='btn-edit'; btnSave.textContent='Guardar';
+      const btnSave = document.createElement('button'); 
+      btnSave.className='btn'; 
+      btnSave.textContent='💾 Guardar Cambios';
       btnSave.onclick = async () => {
         try{
-          const nuevaFecha = fechaInp.value; const nuevaHora = horaInp.value;
+          const nuevaFecha = fechaInp.value; 
+          const nuevaHora = horaInp.value;
           const nuevoPrecio = Number(precioInp.value);
-          if(!nuevaFecha || !nuevaHora || isNaN(nuevoPrecio)){ showMessage('Fecha/hora/precio obligatorios','error'); return; }
-          // if new files, upload and append
+          
+          if(!nuevaFecha || !nuevaHora || isNaN(nuevoPrecio)){ 
+            showMessage('Completa fecha, hora y precio','error'); 
+            return; 
+          }
+          
+          btnSave.disabled = true;
+          btnSave.innerHTML = '<span class="loading"></span> Guardando...';
+          
+          // Subir nuevas imágenes si las hay
           const newFiles = Array.from(photosEdit.files || []);
           const urls = Array.isArray(data.imagenes) ? [...data.imagenes] : [];
+          
           if(newFiles.length){
-            // upload sequentially with progress minimal for edit (no global bar)
             for(const f of newFiles){
               const path = 'turnos/' + id + '/' + Date.now() + '_' + f.name;
               const sRef = storageRef(storage, path);
               const uploadTask = uploadBytesResumable(sRef, f);
+              
               await new Promise((res, rej) => {
                 uploadTask.on('state_changed', ()=>{}, (err)=> rej(err), async ()=> {
                   const url = await getDownloadURL(uploadTask.snapshot.ref);
@@ -639,63 +1311,113 @@
               });
             }
           }
-          // Save both phone fields for compatibility
-          const phoneVal = telInp.value;
-          await update(dbRef(db, 'turnos/' + id), {
-            fecha:nuevaFecha, hora:nuevaHora, precio:nuevoPrecio,
-            descripcion: descInp.value, ubicacion: ubicInp.value,
+          
+          // Preparar datos actualizados
+          const updateData = {
+            fecha: nuevaFecha, 
+            hora: nuevaHora, 
+            precio: nuevoPrecio,
+            descripcion: descInp.value, 
+            ubicacion: ubicInp.value,
             imagenes: urls,
             estado: estadoSel.value,
             reservadoPor: estadoSel.value === 'reservado' ? reservadoInp.value : '',
-            telefono: estadoSel.value === 'reservado' ? phoneVal : '',
-            telefonoWhatsapp: estadoSel.value === 'reservado' ? phoneVal : '',
+            telefono: estadoSel.value === 'reservado' ? telInp.value : '',
+            telefonoWhatsapp: estadoSel.value === 'reservado' ? telInp.value : '',
             emailCliente: estadoSel.value === 'reservado' ? mailInp.value : ''
-          });
-          showMessage('Turno actualizado', 'success');
-        } catch(err){ console.error(err); showMessage('Error al guardar','error'); }
+          };
+          
+          // Agregar coordenadas GPS si están disponibles
+          if (latInp.value && lngInp.value) {
+            updateData.lat = Number(latInp.value);
+            updateData.lng = Number(lngInp.value);
+          }
+          
+          await update(dbRef(db, 'turnos/' + id), updateData);
+          showMessage('Turno actualizado correctamente', 'success');
+        } catch(err){ 
+          console.error(err); 
+          showMessage('Error al actualizar el turno','error'); 
+        } finally {
+          btnSave.disabled = false;
+          btnSave.textContent = '💾 Guardar Cambios';
+        }
       };
 
-      const btnCancel = document.createElement('button'); btnCancel.className='btn-edit'; btnCancel.textContent='Cancelar';
+      const btnCancel = document.createElement('button'); 
+      btnCancel.className='btn-edit'; 
+      btnCancel.textContent='❌ Cancelar';
       btnCancel.onclick = () => {
-        // onValue will re-render automatically
+        // El listener de Firebase re-renderizará automáticamente
       };
 
-      editDiv.appendChild(fechaInp); editDiv.appendChild(horaInp); editDiv.appendChild(precioInp);
-      editDiv.appendChild(ubicInp); editDiv.appendChild(descInp);
-      editDiv.appendChild(estadoSel); editDiv.appendChild(reservadoInp); editDiv.appendChild(telInp); editDiv.appendChild(mailInp);
-      editDiv.appendChild(photosEdit); editDiv.appendChild(btnSave); editDiv.appendChild(btnCancel);
+      editDiv.appendChild(fechaInp); 
+      editDiv.appendChild(horaInp); 
+      editDiv.appendChild(precioInp);
+      editDiv.appendChild(ubicInp);
+      editDiv.appendChild(latInp);
+      editDiv.appendChild(lngInp);
+      editDiv.appendChild(descInp);
+      editDiv.appendChild(estadoSel); 
+      editDiv.appendChild(reservadoInp); 
+      editDiv.appendChild(telInp); 
+      editDiv.appendChild(mailInp);
+      editDiv.appendChild(photosEdit); 
+      editDiv.appendChild(btnSave); 
+      editDiv.appendChild(btnCancel);
 
       wrapper.appendChild(editDiv);
     }
 
-    // Escuchar turnos en real time
+    // Escuchar cambios en turnos
     onValue(turnosRef, (snapshot) => {
       allTurnos = snapshot.val() || {};
       renderTurnosList();
     }, (err) => {
       console.error(err);
-      info.textContent = 'Error de conexión';
+      info.textContent = 'Error de conexión a la base de datos';
+      showMessage('Error de conexión. Verifica tu internet.', 'error');
     });
 
-    // Leer logo & promo preview if exists
+    // Escuchar cambios en configuración del sitio
     onValue(siteRef, (snap) => {
       const s = snap.val() || {};
       logoPreview.innerHTML = '';
       promoPreview.innerHTML = '';
-      if(s.logoUrl){ logoPreview.innerHTML = `<img src="${s.logoUrl}" alt="Logo" style="height:48px;border-radius:6px">`; }
-      if(s.promocion && s.promocion.imageUrl){ promoPreview.innerHTML = `<img src="${s.promocion.imageUrl}" alt="Promo" style="height:64px;border-radius:6px">`; }
+      
+      if(s.logoUrl){ 
+        logoPreview.innerHTML = `<img src="${s.logoUrl}" alt="Logo" style="height:64px;width:auto;border-radius:12px;border:2px solid var(--success);">`;
+      }
+      
+      if(s.promocion && s.promocion.imageUrl){ 
+        promoPreview.innerHTML = `<img src="${s.promocion.imageUrl}" alt="Promoción" style="height:80px;width:120px;border-radius:12px;border:2px solid var(--warning);">`;
+      }
     });
 
+    // Renderizar lista de turnos
     function renderTurnosList(){
       const keys = Object.keys(allTurnos).sort((a,b) => {
         const A = (allTurnos[a].fecha || '') + ' ' + (allTurnos[a].hora || '');
         const B = (allTurnos[b].fecha || '') + ' ' + (allTurnos[b].hora || '');
         return A.localeCompare(B);
       });
+      
       turnosList.innerHTML = '';
-      if(keys.length === 0) { turnosList.innerHTML = '<div class="muted">No hay turnos cargados.</div>'; return; }
-      keys.forEach(id => {
+      
+      if(keys.length === 0) { 
+        turnosList.innerHTML = `
+          <div style="text-align:center;padding:60px 20px;color:var(--muted);">
+            <div style="font-size:4rem;margin-bottom:20px;">📋</div>
+            <div style="font-size:1.2rem;margin-bottom:8px;">No hay turnos registrados</div>
+            <div style="font-size:0.9rem;">Agrega el primer turno usando el formulario de arriba</div>
+          </div>
+        `; 
+        return; 
+      }
+      
+      keys.forEach((id, index) => {
         const el = crearTurnoElemento(id, allTurnos[id]);
+        el.style.animationDelay = `${index * 0.1}s`;
         turnosList.appendChild(el);
       });
     }

@@ -2,365 +2,913 @@
 <html lang="es">
 <head>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Fuentes profesionales y elegantes -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@200;300;400;500;600;700;800&family=Geist:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Turnos — Cliente</title>
+  <title>Reservá tu Turno — Estética Profesional</title>
   <style>
-    /* Franja superior animada */
+    /* Franja superior animada - mejorada */
     .promo-bar {
       width: 100vw;
       min-width: 100%;
-      background: #440D13;
-      border-bottom: 1.5px solid #111;
-      border-top: 1.5px solid #111;
+      background: linear-gradient(135deg, #440D13 0%, #5a1119 50%, #440D13 100%);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
       padding: 0;
       overflow: hidden;
       position: fixed;
       top: 0;
       left: 0;
       z-index: 200;
-      height: 38px;
+      height: 42px;
       display: flex;
       align-items: center;
       box-sizing: border-box;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 20px rgba(68, 13, 19, 0.3);
     }
     .promo-bar-text {
       color: #ffffff;
-      font-family: 'Inter', 'Lato', Arial, sans-serif;
-      font-size: 1.15rem;
-      font-weight: 600;
+      font-family: 'Geist', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 500;
       white-space: nowrap;
       display: inline-block;
-      animation: promoScroll 12s linear infinite;
-      letter-spacing: 1px;
-      padding-left: 0;
+      animation: promoScroll 15s linear infinite;
+      letter-spacing: 0.5px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     }
     @keyframes promoScroll {
       0% { transform: translateX(100vw); }
       100% { transform: translateX(-100vw); }
     }
-  body { padding-top: 0; }
+
+    /* Hero section mejorada */
+    .hero-section {
+      background: linear-gradient(135deg, #E8E6DA 0%, #f4f2e8 50%, #E8E6DA 100%);
+      padding: 80px 0 60px 0;
+      margin-top: 42px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="1" fill="%23440D13" opacity="0.05"/><circle cx="80" cy="80" r="1" fill="%23440D13" opacity="0.05"/><circle cx="40" cy="60" r="0.5" fill="%23440D13" opacity="0.03"/></svg>');
+      animation: floatPattern 20s ease-in-out infinite;
+    }
+    @keyframes floatPattern {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      animation: fadeInUp 0.8s ease-out;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     :root{
       --bg: #E8E6DA;
-      --card: #E8E6DA;
-      --muted: #666;
+      --card: #ffffff;
+      --muted: #6b7280;
       --accent: #440D13;
       --accent-strong: #ffffff;
-      --promo-height: 60px;
-      --text-main: #111;
-      --text-secondary: #555;
-      --border: #eee;
-      --shadow: 0 2px 16px 0 rgba(0,0,0,0.06);
+      --text-main: #111827;
+      --text-secondary: #4b5563;
+      --border: #e5e7eb;
+      --shadow: 0 4px 16px rgba(0,0,0,0.08);
+      --shadow-hover: 0 8px 32px rgba(68, 13, 19, 0.15);
       --radius: 16px;
-      --header-height: 72px;
-      font-family: 'Inter', 'Lato', 'Helvetica Neue', Arial, sans-serif;
+      --header-height: 80px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: 'Geist', 'Inter', system-ui, sans-serif;
     }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
       background: var(--bg);
-      min-height:100vh;
-      color:var(--text-main);
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      padding:0;
-      font-family: var(--font-body);
-      transition: background 0.6s;
+      min-height: 100vh;
+      color: var(--text-main);
+      font-family: 'Geist', system-ui, sans-serif;
+      font-weight: 400;
+      line-height: 1.6;
+      transition: var(--transition);
+      overflow-x: hidden;
     }
-    .wrap{
-      width:100%;
-      max-width:1100px;
-      margin:0 auto;
-      /* Deja espacio extra para la barra y el header */
-      padding-top: calc(var(--promo-height) + var(--header-height) + 24px);
-      padding-bottom: 0;
+
+    .wrap {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
     }
-    header{
-      width:100%;
-      min-height:var(--header-height);
-      background:var(--bg);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      border-bottom:1px solid var(--border);
-      padding:32px 32px 0 32px;
-      box-sizing:border-box;
-      margin-bottom:32px;
-      position:relative;
-      z-index:250;
+
+    /* Header mejorado */
+    header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 32px 0;
+      position: relative;
+      z-index: 100;
     }
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      justify-content: center;
+      text-align: center;
     }
-  .brand img{height:72px;width:auto;border-radius:0px;display:block;box-shadow:none;transition:box-shadow 0.3s;}
-  h1{margin:0;font-size:2.6rem;letter-spacing:1px;color:var(--text-main);font-family:'Playfair Display',serif;font-weight:700;line-height:1.1;}
-  p.lead{margin:0;color:var(--text-secondary);font-size:1.15rem;font-family:var(--font-body);}
-    .controls{
-      display:flex;
-      gap:12px;
-      align-items:center;
-      margin-bottom:24px;
-      flex-wrap:wrap;
-      background:var(--bg);
-      border-radius:var(--radius);
-      box-shadow:none;
-      padding:0;
+
+    .brand img {
+      height: 64px;
+      width: auto;
+      border-radius: 12px;
+      transition: var(--transition);
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
     }
-    input[type="search"], select{
-      padding:10px 16px;
-      border-radius:12px;
-      border:1px solid var(--border);
-      background:var(--bg);
-      color:var(--text-main);
-      font-size:1rem;
-      box-shadow:none;
-      transition:border-color 0.3s, color 0.3s;
-      outline:none;
+
+    .brand img:hover {
+      transform: scale(1.05);
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.15));
     }
-    input[type="search"]:focus, select:focus{
-      border-color:var(--accent);
-      color:var(--accent-strong);
+
+    h1 {
+      margin: 0;
+      font-size: 3.2rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
     }
-  .tabs{display:flex;gap:10px}
-  .tab{padding:10px 18px;border-radius:12px;background:var(--bg);border:1px solid var(--border);cursor:pointer;color:var(--text-main);font-weight:600;transition:border-color 0.3s, color 0.3s;}
-  .tab.active, .tab:hover{border-color:var(--accent);color:var(--accent-strong);background:var(--accent);}
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap:28px;
-      justify-items:center;
-      padding:0 8px;
+
+    p.lead {
+      margin: 8px 0 0 0;
+      color: var(--text-secondary);
+      font-size: 1.2rem;
+      font-family: 'Manrope', sans-serif;
+      font-weight: 400;
     }
-    @media (max-width:700px){
-      .grid{
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap:12px;
-        padding:0 6px;
+
+    /* Controles mejorados */
+    .controls {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      justify-content: center;
+      margin: 40px 0;
+      flex-wrap: wrap;
+      padding: 24px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: var(--radius);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      animation: slideInDown 0.6s ease-out 0.2s both;
+    }
+
+    @keyframes slideInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    input[type="search"], select {
+      padding: 12px 20px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--text-main);
+      font-size: 1rem;
+      font-family: 'Manrope', sans-serif;
+      font-weight: 500;
+      transition: var(--transition);
+      outline: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    input[type="search"]:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(68, 13, 19, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 12px;
+    }
+
+    .tab {
+      padding: 12px 24px;
+      border-radius: 12px;
+      background: white;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      color: var(--text-main);
+      font-weight: 600;
+      font-family: 'Manrope', sans-serif;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tab::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .tab:hover::before {
+      left: 100%;
+    }
+
+    .tab.active, .tab:hover {
+      border-color: var(--accent);
+      color: white;
+      background: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    /* Grid mejorado */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 32px;
+      justify-items: center;
+      padding: 0;
+      animation: fadeIn 0.8s ease-out 0.4s both;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Tarjetas completamente rediseñadas */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 100%;
+      max-width: 380px;
+      min-height: 420px;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      animation: cardFadeIn 0.6s ease-out both;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent), #5a1119);
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    @keyframes cardFadeIn {
+      from { 
+        opacity: 0; 
+        transform: translateY(20px) scale(0.95);
       }
-      .card{
-        min-width:0;
-        max-width:100%;
-        padding:12px 8px;
-        border-radius:10px;
-      }
-      .images img{
-        width:100%;
-        min-width:0;
-        max-width:100vw;
-        height:auto;
-        aspect-ratio:1/1;
-        border-radius:10px;
-      }
-      .meta{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:6px;
+      to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1);
       }
     }
-    .card{
-      background:var(--card);
-      border-radius:0px;
-       border:1px solid #111;
-      padding:18px 12px 14px 12px;
-      box-shadow:var(--shadow);
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-      align-items:center;
-      min-width:180px;
-      max-width:260px;
-      transition:box-shadow 0.3s, border-color 0.3s;
-      animation:fadeInCard 0.7s;
+
+    /* Carrusel de imágenes */
+    .image-carousel {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #f8f9fa;
     }
-    @keyframes fadeInCard {
+
+    .carousel-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .carousel-slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+
+    .carousel-slide.active {
+      opacity: 1;
+    }
+
+    .carousel-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+
+    .carousel-slide img:hover {
+      transform: scale(1.05);
+    }
+
+    .carousel-nav {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 10;
+    }
+
+    .carousel-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.6);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .carousel-dot.active {
+      background: white;
+      transform: scale(1.2);
+    }
+
+    /* Meta información */
+    .meta {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex-grow: 1;
+    }
+
+    .meta-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .meta-date {
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: var(--text-main);
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .meta-time {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      font-weight: 500;
+      font-family: 'Manrope', sans-serif;
+    }
+
+    .price {
+      font-weight: 800;
+      color: var(--accent);
+      font-size: 1.4rem;
+      font-family: 'Space Grotesk', sans-serif;
+      text-align: right;
+    }
+
+    .location-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-family: 'Manrope', sans-serif;
+    }
+
+    /* Descripción mejorada */
+    .description {
+      text-align: left;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.5;
+      font-family: 'Manrope', sans-serif;
+      position: relative;
+    }
+
+    .description.collapsed {
+      max-height: 60px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .description.collapsed::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 20px;
+      background: linear-gradient(transparent, white);
+    }
+
+    .description.expanded {
+      max-height: none;
+    }
+
+    .show-more-btn {
+      background: none;
+      border: none;
+      color: var(--accent);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      font-family: 'Manrope', sans-serif;
+      margin-top: 8px;
+      padding: 4px 0;
+      transition: var(--transition);
+    }
+
+    .show-more-btn:hover {
+      color: #5a1119;
+      transform: translateX(4px);
+    }
+
+    /* Botones mejorados */
+    button {
+      border: 0;
+      padding: 12px 24px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1rem;
+      font-family: 'Manrope', sans-serif;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-reservar {
+      background: var(--accent);
+      color: white;
+      border: 2px solid var(--accent);
+      min-width: 140px;
+    }
+
+    .btn-reservar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .btn-reservar:hover::before {
+      left: 100%;
+    }
+
+    .btn-reservar:hover {
+      background: #5a1119;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(68, 13, 19, 0.3);
+    }
+
+    .btn-maps {
+      background: white;
+      color: var(--accent);
+      border: 1px solid var(--border);
+      font-size: 0.9rem;
+      padding: 8px 16px;
+      margin-top: 8px;
+    }
+
+    .btn-maps:hover {
+      background: var(--accent);
+      color: white;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(68, 13, 19, 0.2);
+    }
+
+    .btn-disabled {
+      background: #f9fafb;
+      color: #9ca3af;
+      cursor: not-allowed;
+      border: 1px solid #e5e7eb;
+    }
+
+    /* Status mejorado */
+    .status-available {
+      color: #059669;
+      font-weight: 700;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .status-reserved {
+      color: var(--muted);
+      font-weight: 700;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .card-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Footer mejorado */
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 60px;
+      padding: 32px 0;
+      border-top: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+    }
+
+    /* Mensajes */
+    .msg {
+      padding: 16px 24px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-family: 'Manrope', sans-serif;
+      font-weight: 500;
+      animation: slideInUp 0.4s ease-out;
+    }
+
+    @keyframes slideInUp {
       from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: none; }
-    }
-  .images{display:flex;gap:8px;overflow:auto;padding-bottom:6px;justify-content:center;}
-    .images img{
-      width:100%;
-      max-width:180px;
-      min-width:120px;
-      aspect-ratio:1/1;
-      object-fit:cover;
-      border-radius:0px;
-      border:0px solid #111;
-      box-shadow:none;
-      cursor:pointer;
-      background:#fff;
-      display:block;
-      margin:0 auto;
-      transition:transform 0.3s;
-    }
-  .images img:hover{transform:scale(1.04);box-shadow:0 6px 24px rgba(68,13,19,0.53);}
-  .meta{display:flex;flex-direction:column;align-items:center;width:100%;margin-top:8px;gap:6px;}
-  .muted{color:var(--muted);font-size:1rem;text-align:center;}
-  .price{font-weight:800;color:#440D13;font-size:1.08rem;text-align:center;}
-  button{border:0;padding:12px 24px;border-radius:12px;cursor:pointer;font-weight:600;font-size:1rem;background:var(--bg);color:var(--text-main);border:1px solid var(--border);transition:border-color 0.3s, color 0.3s;box-shadow:none;}
-  button:hover:not(:disabled){border-color:var(--accent-strong);color:var(--accent-strong);background:var(--accent);}
-  .btn-reservar{background:var(--accent);color:#FAF3E0;border:1px solid var(--accent-strong);}
-  .btn-reservar:hover{background:var(--accent-strong);color:#FAF3E0;}
-  .btn-disabled{background:#f7f7f7;color:#bbb;cursor:not-allowed;border:1px solid #eee;}
-  .status-available{color:var(--accent-strong);font-weight:700;}
-  .status-reserved{color:var(--muted);font-weight:700;}
-  .footer{display:flex;justify-content:space-between;align-items:center;margin-top:32px;flex-wrap:wrap;gap:8px;background:var(--bg);border-radius:var(--radius);padding:8px 14px;box-shadow:none;border-top:1px solid var(--border);}
-  .msg{padding:10px 18px;border-radius:12px;background:var(--accent);color:var(--text-main);box-shadow:var(--shadow);font-size:1rem;}
-  .msg.success{background:var(--accent);color:var(--text-main);border:1px solid var(--accent-strong);}
-  .msg.error{background:rgba(68,13,19,0.06);color:var(--accent-strong);border:1px solid var(--accent-strong);} 
-    @media (max-width:700px){
-      header{flex-direction:column;align-items:flex-start;padding:0 8px;}
-      /* keep space for promo bar + header on small screens to avoid overlap */
-      .wrap{padding-top: calc(var(--promo-height) + var(--header-height) + 12px); padding-left:8px; padding-right:8px;}
-      .card{padding:10px;}
-  .brand img{height:66px;}
-      h1{font-size:1.6rem;}
+      to { opacity: 1; transform: translateY(0); }
     }
 
-  /* Reservation modal (styled to match site) */
-  .resBackdrop{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(3,6,8,0.45);z-index:220;visibility:hidden;opacity:0;transition:opacity 180ms ease, visibility 180ms}
-  .resBackdrop.show{visibility:visible;opacity:1}
-  .resModal{background:var(--card);border-radius:14px;padding:18px;width:100%;max-width:520px;box-shadow:0 24px 60px rgba(2,8,23,0.45);color:var(--text-main)}
-  .resModal h3{margin:0 0 8px 0;font-family:'Playfair Display', serif}
-  .resForm{display:flex;flex-direction:column;gap:10px;margin-top:8px;}
-  .resForm input{padding:12px;border-radius:10px;border:1px solid var(--border);font-size:1rem}
-  .resForm .row{display:flex;gap:10px}
-  .resForm .row .flex{flex:1}
-  .resActions{display:flex;justify-content:flex-end;gap:8px;margin-top:6px}
-  .resPrimary{background:var(--accent);color:var(--accent-strong);padding:10px 14px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
-  .resCancel{background:transparent;border:1px solid var(--border);padding:10px 14px;border-radius:10px;cursor:pointer}
-  /* Promo modal (centered image, not full-bleed) */
-  .promoBackdrop{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(68,13,19,0.12);z-index:120;visibility:hidden;opacity:0;transition:opacity 180ms ease, visibility 180ms}
-  .promoBackdrop.show{visibility:visible;opacity:1}
-  .promoCard{background:var(--card);border-radius:var(--radius);padding:18px;max-width:90%;max-height:85vh;display:flex;align-items:center;justify-content:center;position:relative;box-shadow:var(--shadow);}
-  .promoCard img{max-width:86vw;max-height:78vh;border-radius:14px;box-shadow:0 30px 60px rgba(68,13,19,0.53);display:block;transition:box-shadow 0.3s;}
-    /* flechita arriba (cierra) */
-    .promoCloseTop{
-      position:absolute;left:50%;transform:translateX(-50%);top:-28px;background:transparent;border:0;color:var(--accent);font-size:34px;cursor:pointer;
-      text-shadow:0 4px 20px rgba(0,0,0,0.12);
-    }
-    .promoCloseSmall{
-      position:absolute;right:-50px;top:-5px;background:var(--accent);border-radius:50%;width:36px;height:36px;border:0;color:#fff;font-size:18px;cursor:pointer;
-      display:flex;align-items:center;justify-content:center;
-      transition:background 0.9s;
+    .msg.success {
+      background: #f0fdf4;
+      color: #059669;
+      border: 1px solid #bbf7d0;
     }
 
-    /* Ticket download helper */
-    .ticketDownload{
-      display:inline-flex;
-      gap:8px;
-      align-items:center;
-      padding:8px 12px;
-      border-radius:10px;
-      border:1px solid var(--border);
-      background:var(--card);
-      cursor:pointer;
+    .msg.error {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
     }
 
-    /* Floating action button (small, round, mobile-friendly) */
-    .fab{
-      position:fixed;
-      right:14px;
-      bottom:18px;
-      width:56px;
-      height:56px;
-      border-radius:50%;
-      border:0;
-      background:var(--accent);
-      box-shadow:0 8px 24px rgba(68,13,19,0.28);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      z-index:400;
-      padding:6px;
-      cursor:pointer;
+    /* Modales mejorados */
+    .resBackdrop {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      z-index: 220;
+      visibility: hidden;
+      opacity: 0;
+      transition: all 0.3s ease;
     }
-    .fab img{width:100%;height:100%;object-fit:contain;border-radius:50%}
-    @media(min-width:700px){
-      .fab{width:64px;height:64px;right:22px;bottom:22px}
+
+    .resBackdrop.show {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .resModal {
+      background: var(--card);
+      border-radius: 20px;
+      padding: 32px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+      color: var(--text-main);
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+
+    .resBackdrop.show .resModal {
+      transform: scale(1);
+    }
+
+    .resModal h3 {
+      margin: 0 0 24px 0;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+    .resForm {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .resForm input {
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      font-size: 1rem;
+      font-family: 'Manrope', sans-serif;
+      transition: var(--transition);
+    }
+
+    .resForm input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(68, 13, 19, 0.1);
+    }
+
+    /* Promoción modal mejorado */
+    .promoBackdrop {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(68, 13, 19, 0.8);
+      backdrop-filter: blur(12px);
+      z-index: 120;
+      visibility: hidden;
+      opacity: 0;
+      transition: all 0.4s ease;
+    }
+
+    .promoBackdrop.show {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .promoCard {
+      background: var(--card);
+      border-radius: 24px;
+      padding: 24px;
+      max-width: 90%;
+      max-height: 85vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 32px 80px rgba(0, 0, 0, 0.4);
+      transform: scale(0.8);
+      transition: transform 0.4s ease;
+    }
+
+    .promoBackdrop.show .promoCard {
+      transform: scale(1);
+    }
+
+    /* FAB mejorado */
+    .fab {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 0;
+      background: var(--accent);
+      box-shadow: 0 8px 32px rgba(68, 13, 19, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 400;
+      cursor: pointer;
+      transition: var(--transition);
+      animation: fabFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes fabFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+
+    .fab:hover {
+      transform: scale(1.1) translateY(-4px);
+      box-shadow: 0 12px 40px rgba(68, 13, 19, 0.5);
+    }
+
+    .fab img {
+      width: 70%;
+      height: 70%;
+      object-fit: contain;
+      border-radius: 50%;
+    }
+
+    /* Responsive mejorado */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2.4rem;
+      }
+      
+      p.lead {
+        font-size: 1.1rem;
+      }
+
+      .wrap {
+        padding: 0 16px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      .card {
+        max-width: 100%;
+        min-height: auto;
+      }
+
+      .controls {
+        flex-direction: column;
+        gap: 16px;
+        padding: 20px;
+      }
+
+      .controls > div {
+        width: 100%;
+      }
+
+      input[type="search"], select {
+        width: 100%;
+      }
+
+      .tabs {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .meta-header {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .card-actions {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .btn-reservar, .btn-maps {
+        width: 100%;
+      }
+
+      .fab {
+        width: 56px;
+        height: 56px;
+        right: 16px;
+        bottom: 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-section {
+        padding: 60px 0 40px 0;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+
+      .card {
+        padding: 20px;
+      }
+
+      .resModal {
+        padding: 24px;
+        margin: 16px;
+      }
     }
 
   </style>
 </head>
 <body>
+  <!-- Barra promocional mejorada -->
   <div class="promo-bar">
     <div class="promo-bar-text">
-      50% off los jueves &nbsp; 50% off los jueves &nbsp; 50% off los jueves &nbsp; 50% off los jueves &nbsp; 50% off los jueves  50% off los jueves &nbsp; 50% off los jueves &nbsp; 50% off los jueves &nbsp; 50% off los jueves &nbsp; 50% off los jueves
+      ✨ Promoción especial: 50% OFF todos los jueves • Reservá tu turno ahora ✨ • 50% OFF todos los jueves • Reservá tu turno ahora ✨
     </div>
   </div>
-  <div class="wrap">
-    
-    <header>
-      <div class="brand">
-        <img id="siteLogo" src="" alt="Logo" onerror="this.style.display='none'">
-        <!-- Coloca aquí tu logo local para que aparezca en el comprobante: -->
-        <img id="receiptLogo" src="logo.png" alt="Logo comprobante" style="display:none;" onerror="this.style.display='none'">
-        <div>
-          <h1>Reservá tu turno</h1>
-          <p class="lead">Elegi tu turno en la mejor estética.</p>
-        </div>
-      </div>
-      <div class="muted">Servidor de turnos</div>
-    </header>
 
+  <!-- Hero section profesional -->
+  <section class="hero-section">
+    <div class="wrap">
+      <header>
+        <div class="brand">
+          <img id="siteLogo" src="" alt="Logo" onerror="this.style.display='none'">
+          <img id="receiptLogo" src="logo.png" alt="Logo comprobante" style="display:none;" onerror="this.style.display='none'">
+          <div class="hero-content">
+            <h1>Reservá tu turno</h1>
+            <p class="lead">Elegí tu cita en la mejor estética profesional</p>
+          </div>
+        </div>
+      </header>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <!-- Controles mejorados -->
     <div class="controls">
-      <div style="display:flex;gap:8px;align-items:center">
-  <input id="search" type="search" placeholder="Buscar">
+      <div style="display:flex;gap:16px;align-items:center;width:100%;max-width:600px;">
+        <input id="search" type="search" placeholder="Buscar por fecha, ubicación..." style="flex:1;">
         <select id="filterState">
-          <option value="all">Todos</option>
-          <option value="disponible">Disponibles</option>
-          <option value="reservado">Reservados</option>
+          <option value="all">Todos los turnos</option>
+          <option value="disponible">Solo disponibles</option>
+          <option value="reservado">Solo reservados</option>
         </select>
       </div>
-      <div class="tabs" role="tablist" aria-label="Ver">
+      <div class="tabs" role="tablist" aria-label="Filtros">
         <button class="tab active" data-tab="all">Todos</button>
       </div>
     </div>
 
+    <!-- Grid de turnos -->
     <section id="turnosSection">
       <div id="turnosGrid" class="grid" aria-live="polite"></div>
 
       <div class="footer">
         <div id="messageArea"></div>
-        <div class="muted">Turnos: <span id="count">0</span></div>
+        <div style="color:var(--text-secondary);font-family:'Manrope',sans-serif;">
+          Total de turnos: <span id="count" style="font-weight:600;color:var(--accent);">0</span>
+        </div>
       </div>
     </section>
   </div>
 
-  <!-- Reservation modal -->
+  <!-- Modal de reserva mejorado -->
   <div id="resBackdrop" class="resBackdrop" aria-hidden="true">
     <div class="resModal" role="dialog" aria-modal="true" aria-labelledby="resTitle">
-      <h3 id="resTitle">Reservar turno</h3>
+      <h3 id="resTitle">Confirmar Reserva</h3>
       <form id="resForm" class="resForm">
         <input id="resName" type="text" placeholder="Nombre completo" required>
-        <div class="row">
-          <input id="resWhatsapp" class="flex" type="text" placeholder="WhatsApp (ej: 341xxxxxxx)" required>
-            <input id="resEmail" class="flex" type="email" placeholder="Gmail (ej: ejemplo@gmail.com)">
+        <div style="display:flex;gap:12px;">
+          <input id="resWhatsapp" type="text" placeholder="WhatsApp" required style="flex:1;">
+          <input id="resEmail" type="email" placeholder="Email" style="flex:1;">
         </div>
-        <div class="resActions">
-          <button type="button" id="resCancel" class="resCancel">Cancelar</button>
-          <button type="submit" id="resSubmit" class="resPrimary">Confirmar y descargar comprobante</button>
+        <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:24px;">
+          <button type="button" id="resCancel" style="background:transparent;border:1px solid var(--border);color:var(--text-secondary);">Cancelar</button>
+          <button type="submit" id="resSubmit" class="btn-reservar">Confirmar y descargar comprobante</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- PROMO modal (image centered, flechita arriba) -->
+  <!-- Modal de promoción mejorado -->
   <div id="promoBackdrop" class="promoBackdrop" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="promoCard">
-      <button id="promoTop" class="promoCloseTop" title="Cerrar">˄</button>
-      <button id="promoX" class="promoCloseSmall" title="Cerrar">✕</button>
-      <img id="promoImg" src="" alt="Promoción">
+      <button id="promoTop" style="position:absolute;left:50%;transform:translateX(-50%);top:-40px;background:transparent;border:0;color:white;font-size:32px;cursor:pointer;" title="Cerrar">˄</button>
+      <button id="promoX" style="position:absolute;right:-20px;top:-10px;background:white;border-radius:50%;width:40px;height:40px;border:0;color:var(--accent);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;" title="Cerrar">✕</button>
+      <img id="promoImg" src="" alt="Promoción" style="max-width:100%;max-height:100%;border-radius:16px;box-shadow:0 16px 40px rgba(0,0,0,0.2);">
     </div>
   </div>
 
-  <!-- Floating action button (edit src and data-href manually) -->
-  <button id="fab" class="fab" data-href="http://wa.me/2235703012" aria-label="Acción rápida">
-    <img id="fabImg" src="w.jpg" alt="Acción" onerror="this.style.display='none'" />
+  <!-- FAB mejorado -->
+  <button id="fab" class="fab" data-href="http://wa.me/2235703012" aria-label="Contacto WhatsApp">
+    <img id="fabImg" src="w.jpg" alt="WhatsApp" onerror="this.style.display='none'" />
   </button>
 
   <script type="module">
@@ -390,13 +938,13 @@
     const tabs = document.querySelectorAll('.tab');
     const siteLogoImg = document.getElementById('siteLogo');
 
-    // promo elements
+    // Elementos de promoción
     const promoBackdrop = document.getElementById('promoBackdrop');
     const promoImg = document.getElementById('promoImg');
     const promoTop = document.getElementById('promoTop');
     const promoX = document.getElementById('promoX');
 
-    // reservation modal elements
+    // Elementos de reserva
     const resBackdrop = document.getElementById('resBackdrop');
     const resForm = document.getElementById('resForm');
     const resName = document.getElementById('resName');
@@ -405,14 +953,13 @@
     const resCancel = document.getElementById('resCancel');
     const resSubmit = document.getElementById('resSubmit');
 
-    // ticket download helper (if user wants to re-download)
-    let lastTicketDataUrl = null;
-
     let allTurnos = {};
     let currentTab = 'all';
     let turnoToReserve = null;
+    let lastTicketDataUrl = null;
 
-    function showMessage(text, type='success', timeout=3500){
+    // Función para mostrar mensajes mejorada
+    function showMessage(text, type='success', timeout=4000){
       msgArea.innerHTML = '';
       const d = document.createElement('div');
       d.className = 'msg ' + (type === 'success' ? 'success' : 'error');
@@ -421,93 +968,210 @@
       setTimeout(()=> { if(msgArea.contains(d)) msgArea.removeChild(d); }, timeout);
     }
 
+    // Función para crear carrusel de imágenes
+    function createImageCarousel(images) {
+      if (!Array.isArray(images) || images.length === 0) {
+        return `
+          <div class="image-carousel">
+            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='200'><rect width='100%' height='100%' fill='%23f8f9fa'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%236b7280' font-family='Manrope' font-size='16'>Sin imágenes</text></svg>" alt="Sin imágenes" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">
+          </div>
+        `;
+      }
+
+      if (images.length === 1) {
+        return `
+          <div class="image-carousel">
+            <img src="${images[0]}" alt="Imagen del turno" style="width:100%;height:100%;object-fit:cover;border-radius:12px;cursor:pointer;" onclick="openImageModal('${images[0]}')">
+          </div>
+        `;
+      }
+
+      const slides = images.map((img, index) => `
+        <div class="carousel-slide ${index === 0 ? 'active' : ''}" data-slide="${index}">
+          <img src="${img}" alt="Imagen ${index + 1}" onclick="openImageModal('${img}')">
+        </div>
+      `).join('');
+
+      const dots = images.map((_, index) => `
+        <div class="carousel-dot ${index === 0 ? 'active' : ''}" data-slide="${index}"></div>
+      `).join('');
+
+      return `
+        <div class="image-carousel" data-carousel>
+          <div class="carousel-container">
+            ${slides}
+          </div>
+          <div class="carousel-nav">
+            ${dots}
+          </div>
+        </div>
+      `;
+    }
+
+    // Función para abrir imagen en modal
+    function openImageModal(imageSrc) {
+      promoImg.src = imageSrc;
+      promoBackdrop.classList.add('show');
+      promoBackdrop.setAttribute('aria-hidden', 'false');
+    }
+
+    // Función para truncar descripción
+    function createDescription(text) {
+      if (!text || text.length <= 150) {
+        return `<div class="description">${text || 'Sin descripción disponible'}</div>`;
+      }
+      
+      const shortText = text.substring(0, 150) + '...';
+      return `
+        <div class="description collapsed" data-full-text="${text.replace(/"/g, '&quot;')}">
+          <div class="description-text">${shortText}</div>
+          <button class="show-more-btn" onclick="toggleDescription(this)">Ver más</button>
+        </div>
+      `;
+    }
+
+    // Función para toggle de descripción
+    window.toggleDescription = function(button) {
+      const description = button.closest('.description');
+      const textDiv = description.querySelector('.description-text');
+      const fullText = description.getAttribute('data-full-text');
+      
+      if (description.classList.contains('collapsed')) {
+        description.classList.remove('collapsed');
+        description.classList.add('expanded');
+        textDiv.textContent = fullText;
+        button.textContent = 'Ver menos';
+      } else {
+        description.classList.remove('expanded');
+        description.classList.add('collapsed');
+        textDiv.textContent = fullText.substring(0, 150) + '...';
+        button.textContent = 'Ver más';
+      }
+    };
+
+    // Función para crear botón de Google Maps
+    function createMapsButton(ubicacion, lat, lng) {
+      if (!ubicacion && !lat && !lng) return '';
+      
+      let mapsUrl;
+      if (lat && lng) {
+        mapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+      } else {
+        mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ubicacion)}`;
+      }
+      
+      return `<button class="btn-maps" onclick="window.open('${mapsUrl}', '_blank')">📍 Ver en Maps</button>`;
+    }
+
+    // Función para crear tarjeta mejorada
     function crearCard(id, data){
       const card = document.createElement('article');
       card.className = 'card';
+      card.style.animationDelay = `${Math.random() * 0.3}s`;
 
-      const imgWrap = document.createElement('div');
-      imgWrap.className = 'images';
-      if(Array.isArray(data.imagenes) && data.imagenes.length){
-        data.imagenes.forEach(url => {
-          const img = document.createElement('img');
-          img.src = url;
-          img.alt = 'Imagen turno';
-          // Evento para pantalla completa
-          img.style.cursor = 'pointer';
-          img.addEventListener('click', () => {
-            promoImg.src = url;
-            promoBackdrop.classList.add('show');
-            promoBackdrop.setAttribute('aria-hidden', 'false');
-          });
-          imgWrap.appendChild(img);
-        });
-      } else {
-        const img = document.createElement('img');
-        img.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="240"><rect width="100%" height="100%" fill="%23eef6ff"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%238aa9d8" font-family="Arial" font-size="18">Sin imágenes</text></svg>';
-        img.style.height='120px';
-        imgWrap.appendChild(img);
-      }
-
-      const title = document.createElement('div');
-      title.innerHTML = `<div style="font-weight:800">${data.fecha} • ${data.hora}</div><div class="muted">${data.ubicacion || ''}</div>`;
-
-      const price = document.createElement('div');
-      price.innerHTML = `<div class="price">$ ${Number(data.precio || 0).toLocaleString('es-AR')}</div><div class="muted">precio</div>`;
-
-      const meta = document.createElement('div');
-      meta.className = 'meta';
-      meta.appendChild(title);
-      meta.appendChild(price);
-
-      const desc = document.createElement('div');
-      desc.className = 'muted';
-      desc.textContent = data.descripcion || '';
-
-      const statusLine = document.createElement('div');
-      statusLine.style.display = 'flex';
-      statusLine.style.justifyContent = 'space-between';
-      statusLine.style.alignItems = 'center';
-      statusLine.style.gap = '8px';
-
-      const status = document.createElement('div');
       const estado = data.estado || 'disponible';
-      if(estado === 'disponible'){
-        status.innerHTML = `<span class="status-available">Disponible</span>`;
-      } else {
-        status.innerHTML = `<span class="status-reserved">Turno reservado</span>`;
-      }
+      const isAvailable = estado === 'disponible';
 
-      const btn = document.createElement('button');
-      btn.style.marginLeft = '8px';
-      if(estado === 'disponible'){
-        btn.className = 'btn-reservar';
-        btn.textContent = 'Reservar';
-        btn.onclick = () => openReservationModal(id, data);
-      } else {
-        btn.className = 'btn-disabled';
-        btn.textContent = 'No disponible';
-        btn.disabled = true;
-      }
+      card.innerHTML = `
+        ${createImageCarousel(data.imagenes)}
+        
+        <div class="meta">
+          <div class="meta-header">
+            <div>
+              <div class="meta-date">${data.fecha || 'Fecha no disponible'}</div>
+              <div class="meta-time">${data.hora || 'Hora no disponible'}</div>
+              ${data.ubicacion ? `<div class="location-info">📍 ${data.ubicacion}</div>` : ''}
+            </div>
+            <div class="price">$${Number(data.precio || 0).toLocaleString('es-AR')}</div>
+          </div>
+          
+          ${createDescription(data.descripcion)}
+          
+          <div class="card-actions">
+            <div class="${isAvailable ? 'status-available' : 'status-reserved'}">
+              ${isAvailable ? '✅ Disponible' : '🔒 Reservado'}
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              ${isAvailable ? 
+                `<button class="btn-reservar" onclick="openReservationModal('${id}', ${JSON.stringify(data).replace(/"/g, '&quot;')})">Reservar turno</button>` :
+                `<button class="btn-disabled" disabled>No disponible</button>`
+              }
+              ${createMapsButton(data.ubicacion, data.lat, data.lng)}
+            </div>
+          </div>
+        </div>
+      `;
 
-      statusLine.appendChild(status);
-      statusLine.appendChild(btn);
-
-      card.appendChild(imgWrap);
-      card.appendChild(meta);
-      card.appendChild(desc);
-      card.appendChild(statusLine);
+      // Inicializar carrusel si tiene múltiples imágenes
+      setTimeout(() => initCarousel(card), 100);
 
       return card;
     }
 
-    function openReservationModal(id, data){
+    // Inicializar carrusel
+    function initCarousel(cardElement) {
+      const carousel = cardElement.querySelector('[data-carousel]');
+      if (!carousel) return;
+
+      const slides = carousel.querySelectorAll('.carousel-slide');
+      const dots = carousel.querySelectorAll('.carousel-dot');
+      
+      if (slides.length <= 1) return;
+
+      let currentSlide = 0;
+      let intervalId;
+
+      // Función para mostrar slide
+      function showSlide(index) {
+        slides.forEach((slide, i) => {
+          slide.classList.toggle('active', i === index);
+        });
+        dots.forEach((dot, i) => {
+          dot.classList.toggle('active', i === index);
+        });
+        currentSlide = index;
+      }
+
+      // Función para siguiente slide
+      function nextSlide() {
+        const next = (currentSlide + 1) % slides.length;
+        showSlide(next);
+      }
+
+      // Auto-play
+      function startAutoPlay() {
+        intervalId = setInterval(nextSlide, 4000);
+      }
+
+      function stopAutoPlay() {
+        clearInterval(intervalId);
+      }
+
+      // Event listeners para dots
+      dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+          showSlide(index);
+          stopAutoPlay();
+          startAutoPlay(); // Reiniciar auto-play
+        });
+      });
+
+      // Pause on hover
+      carousel.addEventListener('mouseenter', stopAutoPlay);
+      carousel.addEventListener('mouseleave', startAutoPlay);
+
+      // Iniciar auto-play
+      startAutoPlay();
+    }
+
+    // Función para abrir modal de reserva
+    window.openReservationModal = function(id, data) {
       turnoToReserve = { id, data };
-      // reset form
       resForm.reset();
       resBackdrop.classList.add('show');
       resBackdrop.setAttribute('aria-hidden', 'false');
       resName.focus();
-    }
+    };
 
     function closeReservationModal(){
       resBackdrop.classList.remove('show');
@@ -515,7 +1179,7 @@
       turnoToReserve = null;
     }
 
-    // Reservation form handlers
+    // Event listeners para modal de reserva
     resCancel.addEventListener('click', () => {
       closeReservationModal();
       showMessage('Reserva cancelada', 'error');
@@ -523,27 +1187,41 @@
 
     resForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      if(!turnoToReserve) { showMessage('No se detectó el turno a reservar', 'error'); closeReservationModal(); return; }
+      if(!turnoToReserve) { 
+        showMessage('No se detectó el turno a reservar', 'error'); 
+        closeReservationModal(); 
+        return; 
+      }
+      
       const nombre = resName.value.trim();
       const whatsapp = resWhatsapp.value.trim().replace(/\D/g,'');
       const email = resEmail.value.trim();
 
-      if(nombre.length < 3){ showMessage('Ingresá tu nombre completo.', 'error'); return; }
-      if(!/^\d{6,15}$/.test(whatsapp)){ showMessage('Ingresá un número de WhatsApp válido (sólo dígitos).', 'error'); return; }
-      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showMessage('Ingresá un correo válido.', 'error'); return; }
+      if(nombre.length < 3){ 
+        showMessage('Ingresá tu nombre completo.', 'error'); 
+        return; 
+      }
+      if(!/^\d{6,15}$/.test(whatsapp)){ 
+        showMessage('Ingresá un número de WhatsApp válido (solo dígitos).', 'error'); 
+        return; 
+      }
+      if(email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ 
+        showMessage('Ingresá un correo válido.', 'error'); 
+        return; 
+      }
 
-      // disable submit to prevent double clicks
       resSubmit.disabled = true;
 
       try {
         const id = turnoToReserve.id;
-        // check current state
+        // Verificar estado actual
         const snap = await get(dbRef(db, 'turnos/' + id));
         if(!snap.exists()){
           showMessage('El turno ya no existe.', 'error');
           closeReservationModal();
           return;
         }
+        
         const current = snap.val();
         if(current.estado === 'reservado'){
           showMessage('Ese turno ya fue reservado por otro usuario.', 'error');
@@ -551,7 +1229,7 @@
           return;
         }
 
-        // update DB (same fields as before)
+        // Actualizar DB
         await update(dbRef(db, 'turnos/' + id), {
           reservadoPor: nombre,
           telefonoWhatsapp: whatsapp,
@@ -560,35 +1238,32 @@
           estado: 'reservado'
         });
 
-        showMessage('Reserva registrada. Generando comprobante...', 'success');
+        showMessage('¡Reserva confirmada! Generando comprobante...', 'success');
 
-        // Prepare ticket data: prefer latest data from DB (current may be stale), get again
+        // Generar y descargar comprobante
         const finalSnap = await get(dbRef(db, 'turnos/' + id));
         const finalData = finalSnap.val() || turnoToReserve.data;
 
-        // Create ticket image and trigger download
         try {
           const ticketDataUrl = await generateTicketImage(finalData, { nombre, whatsapp, email });
           lastTicketDataUrl = ticketDataUrl;
-          // auto-download
           triggerDownload(ticketDataUrl, buildFileName(finalData));
-          // Show short success and provide download helper
           showDownloadHelper(ticketDataUrl);
         } catch(imgErr){
           console.error('Error generando comprobante:', imgErr);
-          showMessage('Reserva OK — pero falló la generación del comprobante (ver consola).', 'error');
+          showMessage('Reserva confirmada — pero falló la generación del comprobante.', 'error');
         }
 
         closeReservationModal();
       } catch(err){
         console.error(err);
-        showMessage('Error al reservar (ver consola)', 'error');
+        showMessage('Error al reservar. Intenta nuevamente.', 'error');
       } finally {
         resSubmit.disabled = false;
       }
     });
 
-    // helper to trigger download
+    // Funciones para generar y descargar comprobante (mantenidas del original)
     function triggerDownload(dataUrl, filename){
       const a = document.createElement('a');
       a.href = dataUrl;
@@ -605,118 +1280,132 @@
     }
 
     function showDownloadHelper(dataUrl){
-      // append small button near messageArea so user can download again
       const existing = document.getElementById('downloadTicketBtn');
       if(existing) existing.remove();
+      
       const btn = document.createElement('button');
       btn.id = 'downloadTicketBtn';
-      btn.className = 'ticketDownload';
-      btn.innerHTML = '📥 Descargar comprobante';
+      btn.style.cssText = `
+        background: var(--accent); 
+        color: white; 
+        border: none; 
+        padding: 12px 20px; 
+        border-radius: 12px; 
+        cursor: pointer; 
+        font-family: 'Manrope', sans-serif; 
+        font-weight: 600; 
+        margin-top: 12px;
+        transition: var(--transition);
+      `;
+      btn.innerHTML = '📥 Descargar comprobante nuevamente';
       btn.onclick = () => triggerDownload(dataUrl, 'comprobante.png');
+      btn.addEventListener('mouseenter', () => {
+        btn.style.transform = 'translateY(-2px)';
+        btn.style.boxShadow = '0 8px 24px rgba(68, 13, 19, 0.3)';
+      });
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transform = 'translateY(0)';
+        btn.style.boxShadow = 'none';
+      });
+      
       msgArea.appendChild(btn);
-      // auto-remove after 45s
+      
       setTimeout(()=> {
         const el = document.getElementById('downloadTicketBtn');
         if(el) el.remove();
       }, 45000);
     }
 
-    // generate ticket image using canvas
+    // Generar comprobante (función mantenida del original pero mejorada visualmente)
     async function generateTicketImage(turno, cliente){
-      const W = 1200; const H = 780;
-      const c = document.createElement('canvas'); c.width = W; c.height = H;
+      const W = 1200; const H = 800;
+      const c = document.createElement('canvas'); 
+      c.width = W; c.height = H;
       const ctx = c.getContext('2d');
 
-      // base
-      ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,W,H);
+      // Fondo base
+      ctx.fillStyle = '#ffffff'; 
+      ctx.fillRect(0,0,W,H);
 
-      // top band
-      const accent = (getComputedStyle(document.documentElement).getPropertyValue('--accent') || '#440D13').trim();
-      ctx.fillStyle = accent; ctx.fillRect(0,0,W,120);
+      // Header con gradiente
+      const gradient = ctx.createLinearGradient(0, 0, W, 120);
+      gradient.addColorStop(0, '#440D13');
+      gradient.addColorStop(1, '#5a1119');
+      ctx.fillStyle = gradient; 
+      ctx.fillRect(0,0,W,120);
 
-      // title
-      ctx.fillStyle = '#fff'; ctx.font = '700 28px "Playfair Display", serif'; ctx.textAlign = 'center';
+      // Título
+      ctx.fillStyle = '#fff'; 
+      ctx.font = '700 32px "Space Grotesk", sans-serif'; 
+      ctx.textAlign = 'center';
       ctx.fillText('Comprobante de Reserva', W/2, 74);
 
-      // white card area
-      const margin = 56; const cardTop = 140; const cardH = H - cardTop - 60;
-      ctx.fillStyle = '#fafafa'; ctx.fillRect(margin, cardTop, W - margin*2, cardH);
-      ctx.strokeStyle = '#eee'; ctx.strokeRect(margin, cardTop, W - margin*2, cardH);
+      // Área del comprobante
+      const margin = 60; 
+      const cardTop = 150; 
+      const cardH = H - cardTop - 80;
+      
+      ctx.fillStyle = '#fafbfc'; 
+      ctx.fillRect(margin, cardTop, W - margin*2, cardH);
+      ctx.strokeStyle = '#e5e7eb'; 
+      ctx.lineWidth = 2;
+      ctx.strokeRect(margin, cardTop, W - margin*2, cardH);
 
-      // left column (cliente) and right column (turno)
-      const leftX = margin + 28; const midX = W/2 + 10; let y = cardTop + 34; const lh = 34;
+      // Contenido en dos columnas
+      const leftX = margin + 40; 
+      const midX = W/2 + 20; 
+      let y = cardTop + 50; 
+      const lh = 38;
+      
       ctx.textAlign = 'left';
 
-      ctx.fillStyle = '#222'; ctx.font = '700 20px "Inter", sans-serif'; ctx.fillText('Cliente', leftX, y); y += lh;
-      ctx.font = '600 18px sans-serif'; ctx.fillText('Nombre: ' + (cliente.nombre || '-'), leftX, y); y += lh;
+      // Columna izquierda - Cliente
+      ctx.fillStyle = '#111827'; 
+      ctx.font = '700 24px "Space Grotesk", sans-serif'; 
+      ctx.fillText('Datos del Cliente', leftX, y); y += lh + 10;
+      
+      ctx.font = '600 18px "Manrope", sans-serif'; 
+      ctx.fillText('Nombre: ' + (cliente.nombre || '-'), leftX, y); y += lh;
       ctx.fillText('WhatsApp: ' + (cliente.whatsapp || '-'), leftX, y); y += lh;
-      ctx.fillText('Email: ' + (cliente.email || '-'), leftX, y); y += lh + 8;
+      ctx.fillText('Email: ' + (cliente.email || '-'), leftX, y); y += lh + 20;
 
-      // right column
-      let ry = cardTop + 34;
-      ctx.font = '700 20px "Inter", sans-serif'; ctx.fillText('Detalle del turno', midX, ry); ry += lh;
-      ctx.font = '600 18px sans-serif'; ctx.fillText('Fecha: ' + (turno.fecha || '-'), midX, ry); ry += lh;
+      // Columna derecha - Turno
+      let ry = cardTop + 50;
+      ctx.font = '700 24px "Space Grotesk", sans-serif'; 
+      ctx.fillText('Detalles del Turno', midX, ry); ry += lh + 10;
+      
+      ctx.font = '600 18px "Manrope", sans-serif'; 
+      ctx.fillText('Fecha: ' + (turno.fecha || '-'), midX, ry); ry += lh;
       ctx.fillText('Hora: ' + (turno.hora || '-'), midX, ry); ry += lh;
-      ctx.fillText('Precio: $ ' + (Number(turno.precio||0).toLocaleString('es-AR')), midX, ry); ry += lh;
-      ctx.fillText('Ubicación: ' + (turno.ubicacion || '-'), midX, ry); ry += lh;
+      ctx.fillText('Precio: $' + (Number(turno.precio||0).toLocaleString('es-AR')), midX, ry); ry += lh;
+      ctx.fillText('Ubicación: ' + (turno.ubicacion || '-'), midX, ry); ry += lh + 20;
 
-      // description full width
-      let descY = Math.max(y, ry) + 12;
-      ctx.font = '700 18px "Inter", sans-serif'; ctx.fillText('Descripción:', leftX, descY); descY += 24;
-      ctx.font = '600 16px sans-serif'; wrapText(ctx, String(turno.descripcion || '-'), leftX, descY, W - margin*2 - 40, 22);
+      // Descripción
+      let descY = Math.max(y, ry);
+      ctx.font = '700 20px "Space Grotesk", sans-serif'; 
+      ctx.fillText('Descripción:', leftX, descY); descY += 30;
+      ctx.font = '400 16px "Manrope", sans-serif'; 
+      wrapText(ctx, String(turno.descripcion || 'Sin descripción'), leftX, descY, W - margin*2 - 80, 24);
 
-      // footer
-      ctx.fillStyle = '#666'; ctx.font = '14px sans-serif'; ctx.textAlign = 'center';
-      ctx.fillText('Presentá este comprobante en el local. Reservado mediante sistema web.', W/2, H - 30);
-
-      // draw a subtle large logo watermark bottom-right (doesn't block text)
-      try {
-        await drawLogoWatermark(ctx, W, H, { margin: margin, cardTop: cardTop, cardH: cardH });
-      } catch(e){ /* ignore watermark errors */ }
+      // Footer
+      ctx.fillStyle = '#6b7280'; 
+      ctx.font = '14px "Manrope", sans-serif'; 
+      ctx.textAlign = 'center';
+      ctx.fillText('Presentá este comprobante en el establecimiento • Reserva confirmada via web', W/2, H - 40);
 
       return c.toDataURL('image/png');
     }
 
-    // draw a watermark logo in bottom-right with low opacity
-    async function drawLogoWatermark(ctx, canvasW, canvasH, opts){
-      const local = document.getElementById('receiptLogo');
-      const src = (local && local.src) ? local.src : (siteLogoImg && siteLogoImg.src ? siteLogoImg.src : '');
-      if(!src) return;
-      const img = new Image(); img.crossOrigin = 'anonymous';
-      return new Promise((resolve) => {
-        img.onload = () => {
-          try {
-            const margin = (opts && opts.margin) ? opts.margin : 56;
-            const cardTop = (opts && opts.cardTop) ? opts.cardTop : 140;
-            const cardH = (opts && opts.cardH) ? opts.cardH : (canvasH - cardTop - 60);
-            // place watermark within the card area bottom-right but with low alpha
-            const maxW = Math.min((canvasW - margin*2) * 0.45, 420);
-            const maxH = Math.min(cardH * 0.6, 420);
-            let w = img.width; let h = img.height;
-            const ratio = Math.min(maxW / w, maxH / h, 1);
-            w = Math.round(w * ratio); h = Math.round(h * ratio);
-            const x = canvasW - margin - w - 20;
-            const y = cardTop + cardH - h - 20;
-            ctx.save();
-            ctx.globalAlpha = 0.12;
-            try { ctx.drawImage(img, x, y, w, h); } catch(e) { /* ignore draw errors (CORS) */ }
-            ctx.restore();
-          } catch(e){ /* ignore */ }
-          resolve();
-        };
-        img.onerror = () => { resolve(); };
-        try { img.src = src; } catch(e){ resolve(); }
-      });
-    }
-
-    // helper to wrap text on canvas
+    // Función auxiliar para texto multilínea
     function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
       const words = text.split(' ');
       let line = '';
+      
       for (let n = 0; n < words.length; n++) {
         const testLine = line + words[n] + ' ';
         const metrics = ctx.measureText(testLine);
         const testWidth = metrics.width;
+        
         if (testWidth > maxWidth && n > 0) {
           ctx.fillText(line, x, y);
           line = words[n] + ' ';
@@ -728,86 +1417,93 @@
       ctx.fillText(line, x, y);
     }
 
-    // Render turnos applying search and state filters
+    // Función para filtrar y renderizar turnos
     function aplicarFiltrosYRender(){
       grid.innerHTML = '';
-      const raw = (searchInput.value || '').trim().toLowerCase();
+      
+      const query = (searchInput.value || '').trim().toLowerCase();
       const stateFilter = (filterState.value || 'all');
-
-      // tokenize query by spaces; ignore empty tokens
-      const tokens = raw.split(/\s+/).filter(Boolean);
+      const tokens = query.split(/\s+/).filter(Boolean);
 
       const keys = Object.keys(allTurnos || {}).sort((a,b) => {
         const A = ((allTurnos[a].fecha || '') + ' ' + (allTurnos[a].hora || ''));
         const B = ((allTurnos[b].fecha || '') + ' ' + (allTurnos[b].hora || ''));
         return A.localeCompare(B);
       });
-      let cnt = 0;
-      keys.forEach(id => {
-        const t = allTurnos[id];
-        if(!t) return;
-        const estado = t.estado || 'disponible';
-        if(stateFilter !== 'all' && estado !== stateFilter) return;
 
-        // build searchable text fields
-        const fields = [
-          t.fecha || '',
-          t.hora || '',
-          (t.descripcion || ''),
-          (t.ubicacion || ''),
-          (t.titulo || '')
-        ].map(s => String(s).toLowerCase());
-
-        // if no tokens, match everything
-        let ok = true;
-        for(const token of tokens){
-          // token must match at least one field either as full word or as prefix (first 2-4 letters)
-          const minPrefix = Math.min(4, Math.max(2, token.length));
-          const prefix = token.slice(0, minPrefix);
-          const tokenOk = fields.some(f => {
-            // full word match (word boundary)
-            if(new RegExp('\\b' + escapeRegex(token) + '\\b').test(f)) return true;
-            // prefix match (start of any word)
-            if(new RegExp('\\b' + escapeRegex(prefix)).test(f)) return true;
-            // substring fallback
-            if(f.includes(token)) return true;
-            return false;
-          });
-          if(!tokenOk){ ok = false; break; }
+      let count = 0;
+      
+      keys.forEach((id, index) => {
+        const turno = allTurnos[id];
+        if (!turno) return;
+        
+        const estado = turno.estado || 'disponible';
+        
+        // Filtro por estado
+        if (stateFilter !== 'all' && estado !== stateFilter) return;
+        
+        // Filtro de búsqueda
+        if (tokens.length > 0) {
+          const searchableFields = [
+            turno.fecha || '',
+            turno.hora || '',
+            turno.descripcion || '',
+            turno.ubicacion || '',
+          ].map(s => String(s).toLowerCase());
+          
+          const matchesQuery = tokens.every(token =>
+            searchableFields.some(field => field.includes(token))
+          );
+          
+          if (!matchesQuery) return;
         }
-
-        if(!ok) return;
-
-        grid.appendChild(crearCard(id, t));
-        cnt++;
+        
+        const cardElement = crearCard(id, turno);
+        cardElement.style.animationDelay = `${index * 0.1}s`;
+        grid.appendChild(cardElement);
+        count++;
       });
-      countEl.textContent = cnt;
+
+      countEl.textContent = count;
+      
+      // Mostrar mensaje si no hay resultados
+      if (count === 0) {
+        const noResults = document.createElement('div');
+        noResults.style.cssText = `
+          grid-column: 1 / -1;
+          text-align: center;
+          padding: 60px 20px;
+          color: var(--text-secondary);
+          font-family: 'Manrope', sans-serif;
+          font-size: 1.1rem;
+        `;
+        noResults.innerHTML = `
+          <div style="font-size: 4rem; margin-bottom: 20px; opacity: 0.3;">🔍</div>
+          <div>No se encontraron turnos</div>
+          <div style="font-size: 0.9rem; margin-top: 8px;">Probá con otros términos de búsqueda</div>
+        `;
+        grid.appendChild(noResults);
+      }
     }
 
-    // small helper to escape regex metachars
-    function escapeRegex(s){
-      return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    }
+    // Event listeners para filtros
+    searchInput.addEventListener('input', aplicarFiltrosYRender);
+    filterState.addEventListener('change', aplicarFiltrosYRender);
 
-    // Tabs
+    // Tabs (mantenido para compatibilidad)
     document.querySelectorAll('.tab').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        const tab = btn.dataset.tab;
-        if(tab === 'all') currentTab = 'all';
-        else if(tab === 'disponibles') currentTab = 'disponibles';
-        else if(tab === 'reservados') currentTab = 'reservados';
         aplicarFiltrosYRender();
       });
     });
 
-    searchInput.addEventListener('input', aplicarFiltrosYRender);
-    filterState.addEventListener('change', aplicarFiltrosYRender);
-
-    // Listen for logo and promo in siteRef
+    // Escuchar cambios en Firebase
     onValue(siteRef, (snap) => {
       const s = snap.val() || {};
+      
+      // Logo
       if(s.logoUrl){
         siteLogoImg.src = s.logoUrl;
         siteLogoImg.style.display = 'block';
@@ -815,15 +1511,14 @@
         siteLogoImg.style.display = 'none';
       }
 
-      // Promotion handling
+      // Promoción
       const promo = s.promocion || null;
       if(promo && promo.imageUrl){
-        // show promo only if not closed this session or if new createdAt differs
         const closedKey = sessionStorage.getItem('promoClosedAt');
         if(closedKey && String(closedKey) === String(promo.createdAt)){
-          // user closed this exact promo in this session, do nothing
+          // Usuario ya cerró esta promoción
         } else {
-          // show promo
+          // Mostrar promoción
           promoImg.src = promo.imageUrl;
           promoBackdrop.classList.add('show');
           promoBackdrop.setAttribute('aria-hidden', 'false');
@@ -834,62 +1529,67 @@
       }
     });
 
-    // Promo close handlers (top arrow and X)
-    promoTop.addEventListener('click', async () => {
+    // Event listeners para cerrar promoción
+    promoTop.addEventListener('click', closePromo);
+    promoX.addEventListener('click', closePromo);
+    
+    async function closePromo() {
       const snap = await get(siteRef);
       const s = snap.val() || {};
       const promo = s.promocion || {};
-      closePromo(promo.createdAt || null);
-    });
-    promoX.addEventListener('click', async () => {
-      const snap = await get(siteRef);
-      const s = snap.val() || {};
-      const promo = s.promocion || {};
-      closePromo(promo.createdAt || null);
-    });
-
-    function closePromo(promoCreatedAt = null){
+      
       promoBackdrop.classList.remove('show');
       promoBackdrop.setAttribute('aria-hidden', 'true');
-      if(promoCreatedAt) sessionStorage.setItem('promoClosedAt', String(promoCreatedAt));
-      else {
-        get(siteRef).then(snap => {
-          const s = snap.val() || {};
-          const promo = s.promocion || {};
-          if(promo.createdAt) sessionStorage.setItem('promoClosedAt', String(promo.createdAt));
-        }).catch(()=>{});
+      
+      if(promo.createdAt) {
+        sessionStorage.setItem('promoClosedAt', String(promo.createdAt));
       }
     }
 
-    // Escuchar turnos en tiempo real
+    // Escuchar turnos
     onValue(turnosRef, (snapshot) => {
       allTurnos = snapshot.val() || {};
       aplicarFiltrosYRender();
     }, (err)=> {
       console.error(err);
-      showMessage('Error de conexión a Firebase', 'error');
+      showMessage('Error de conexión. Intenta recargar la página.', 'error');
     });
 
-    // Debug helpers (exposed so you can call from browser console)
-    try {
-      window.__app = window.__app || {};
-      window.__app.aplicarFiltrosYRender = aplicarFiltrosYRender;
-      window.__app.crearCard = crearCard;
-      window.__app.allTurnos = allTurnos;
-    } catch(e) { /* noop if environment prevents it */ }
+    // FAB (WhatsApp)
+    const fab = document.getElementById('fab');
+    if(fab){
+      fab.addEventListener('click', (e) => {
+        const href = fab.getAttribute('data-href');
+        if(href){ 
+          window.open(href, '_blank', 'noopener');
+        }
+      });
+    }
 
-    // Floating action button behavior
-    try {
-      const fab = document.getElementById('fab');
-      if(fab){
-        fab.addEventListener('click', (e) => {
-          const href = fab.getAttribute('data-href');
-          if(href){ window.open(href, '_blank', 'noopener'); }
-        });
-        // prevent keyboard focus outline on mobile tap
-        fab.addEventListener('touchstart', ()=>{});
+    // Cerrar modales con Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (resBackdrop.classList.contains('show')) {
+          closeReservationModal();
+        }
+        if (promoBackdrop.classList.contains('show')) {
+          closePromo();
+        }
       }
-    } catch(e){ /* noop */ }
+    });
+
+    // Cerrar modales haciendo clic fuera
+    resBackdrop.addEventListener('click', (e) => {
+      if (e.target === resBackdrop) {
+        closeReservationModal();
+      }
+    });
+
+    promoBackdrop.addEventListener('click', (e) => {
+      if (e.target === promoBackdrop) {
+        closePromo();
+      }
+    });
 
   </script>
 </body>
